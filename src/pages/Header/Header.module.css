@@ -1,0 +1,39 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  font-size: 1.3rem;
+  padding: 0 5px;
+  color: white;
+}
+
+.headerNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  background-color: black;
+}
+
+.mainNav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mainNav a {
+  font-size: 1.3rem;
+  color: white;
+}
+
+.headerNav a {
+  text-decoration: none;
+}
+
+.mainNav a:visited {
+  color: white;
+}

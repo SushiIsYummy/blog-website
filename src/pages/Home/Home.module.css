@@ -1,0 +1,105 @@
+.home {
+  padding: 20px;
+  margin: auto;
+  max-width: 1200px;
+}
+
+.heroSectionContainer {
+}
+
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+}
+
+.heroSection h1 {
+  font-size: 2.5rem;
+}
+
+.heroSection p {
+  font-size: 1.3rem;
+}
+
+.getStartedButton {
+  align-self: flex-start;
+  padding: 8px 50px;
+  border-radius: 20px;
+  border: none;
+  background-color: rgb(57, 243, 57);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.topPostsContainer {
+  margin-top: 20px;
+}
+
+.topPostsContainer h1 {
+  margin-bottom: 10px;
+}
+
+.topPosts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 10px;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.author img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.author p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.postTitle {
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 768px) {
+  .heroSection {
+    max-width: 700px;
+    gap: 20px;
+  }
+
+  .heroSection h1 {
+    font-size: 3.5rem;
+  }
+
+  .heroSection p {
+    font-size: 1.5rem;
+  }
+
+  .getStartedButton {
+    font-size: 1.3rem;
+  }
+}
