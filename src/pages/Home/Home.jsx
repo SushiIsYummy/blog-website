@@ -1,11 +1,12 @@
-import { useLoaderData } from 'react-router-dom';
-import { getTopPosts } from '../../api';
+import { useLoaderData, NavLink } from 'react-router-dom';
 import styles from './Home.module.css';
 import { DateTime } from 'luxon';
+import {} from 'react-router-dom';
+import PostAPI from '../../api/PostAPI';
 
 export async function loader() {
   try {
-    let postsResponse = await getTopPosts(6);
+    const postsResponse = await PostAPI.getAllPosts();
     return { postsResponse };
   } catch (err) {
     console.error(err);
@@ -15,7 +16,8 @@ export async function loader() {
 
 function Home() {
   let { postsResponse } = useLoaderData();
-  const posts = postsResponse.data.data.posts;
+  const posts = postsResponse.data.posts;
+
   return (
     <div className={styles.home}>
       <section className={styles.heroSectionContainer}>
@@ -36,12 +38,15 @@ function Home() {
             const formattedDate = dateTime.toFormat('LLL d, yyyy');
             return (
               <div key={post._id} className={styles.post}>
-                <div className={styles.author}>
+                <NavLink
+                  to={`users/${post.author._id}`}
+                  className={styles.author}
+                >
                   <img src='/images/default_profile_photo.jpg' alt='' />
                   <p>
                     {post.author.first_name} {post.author.last_name}
                   </p>
-                </div>
+                </NavLink>
                 <p className={styles.postTitle}>{post.title}</p>
                 <p className={styles.postDate}>{formattedDate}</p>
               </div>

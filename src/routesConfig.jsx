@@ -4,6 +4,8 @@ import Header from './pages/Header/Header';
 import ErrorPage from './pages/Error/ErrorPage';
 import Home from './pages/Home/Home';
 import { loader as HomeLoader } from './pages/Home/Home';
+import { loader as userProfileLoader } from './pages/UserProfile/UserProfile';
+import UserProfile from './pages/UserProfile/UserProfile';
 
 const routesConfig = [
   {
@@ -23,6 +25,19 @@ const routesConfig = [
             index: true,
             element: <Home />,
             loader: HomeLoader,
+          },
+          {
+            path: 'users/:userId',
+            element: <UserProfile />,
+            loader: userProfileLoader,
+            children: [
+              {
+                path: 'about',
+              },
+              {
+                path: 'blogs',
+              },
+            ],
           },
         ],
       },

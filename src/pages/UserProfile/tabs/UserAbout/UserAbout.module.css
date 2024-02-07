@@ -1,0 +1,71 @@
+.aboutContentContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.aboutContentEdit,
+.aboutContentView {
+  display: flex;
+  flex-direction: column;
+  /* margin-top: 22px; */
+  max-width: 700px;
+  width: 100%;
+}
+
+.aboutContentEdit {
+  padding: 0px 10px;
+}
+
+.aboutForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cancelAndSaveButtons {
+  display: flex;
+  align-self: flex-end;
+  gap: 20px;
+}
+
+.editButton,
+.cancelButton,
+.saveButton {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.editButton {
+  align-self: flex-end;
+  border: 1px solid rgb(114, 113, 113);
+  color: rgb(97, 97, 97);
+}
+
+.editButton:hover {
+  color: black;
+  background-color: rgb(231, 231, 231);
+}
+
+.cancelButton {
+  color: rgb(197, 51, 51);
+  border: none;
+  border: 1px solid rgb(182, 182, 182);
+  background-color: transparent;
+}
+
+.cancelButton:hover {
+  color: red;
+  background-color: rgb(250, 250, 250);
+}
+
+.saveButton {
+  color: rgb(255, 255, 255);
+  background-color: rgb(48, 212, 48);
+  border: none;
+}
+
+.saveButton:hover {
+  background-color: rgb(43, 184, 43);
+}

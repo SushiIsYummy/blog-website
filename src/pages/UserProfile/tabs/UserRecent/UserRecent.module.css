@@ -1,0 +1,50 @@
+.posts {
+  display: flex;
+  flex-direction: column;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-bottom: 1px solid rgb(214, 214, 214);
+  padding: 15px;
+}
+
+.relativeTimeAndBlog {
+  /* margin-bottom: 5px; */
+}
+
+.blogTitle {
+  text-decoration: none;
+}
+
+.blogTitle:link,
+.blogTitle:visited {
+  color: black;
+}
+
+.blogTitle span {
+  font-weight: bold;
+}
+
+.postTitle {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+.postContent {
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

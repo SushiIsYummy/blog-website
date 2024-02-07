@@ -1,0 +1,68 @@
+.userProfileContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.userProfile {
+  width: 700px;
+  min-width: 0;
+}
+
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.userImage {
+  width: 60px;
+  height: 60px;
+}
+
+.name {
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  word-break: break-word;
+}
+
+.username {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.navigationTabContainer {
+}
+
+.navigationTab {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.tab {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.tab:link,
+.tab:visited {
+  color: rgb(61, 61, 61);
+}
+
+.tab.active {
+  color: black;
+  border-bottom: 1px solid black;
+}
