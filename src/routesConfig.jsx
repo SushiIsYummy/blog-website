@@ -5,6 +5,7 @@ import ErrorPage from './pages/Error/ErrorPage';
 import Home from './pages/Home/Home';
 import { loader as HomeLoader } from './pages/Home/Home';
 import { loader as userProfileLoader } from './pages/UserProfile/UserProfile';
+import Blog, { loader as blogLoader } from './pages/Blog/Blog';
 import UserProfile from './pages/UserProfile/UserProfile';
 
 const routesConfig = [
@@ -38,6 +39,11 @@ const routesConfig = [
                 path: 'blogs',
               },
             ],
+          },
+          {
+            path: 'blogs/:blogId',
+            element: <Blog />,
+            loader: blogLoader,
           },
         ],
       },

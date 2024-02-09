@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, NavLink } from 'react-router-dom';
 import styles from './UserBlogs.module.css';
 import { useEffect, useState } from 'react';
 import BlogAPI from '../../../../api/BlogAPI';
@@ -51,8 +51,10 @@ function UserBlogs({ blogs, setBlogs }) {
           blogs.map((blog) => {
             return (
               <div key={blog._id} className={styles.blog}>
-                <p className={styles.blogTitle}>{blog.title}</p>
-                <p className={styles.blogDescription}>{blog.description}</p>
+                <NavLink to={`/blogs/${blog._id}`}>
+                  <h1 className={styles.blogTitle}>{blog.title}</h1>
+                  <p className={styles.blogDescription}>{blog.description}</p>
+                </NavLink>
               </div>
             );
           })}

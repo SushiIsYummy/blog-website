@@ -6,7 +6,6 @@ import { toRelativeTimeLuxon } from '../../../../utils/toRelativeTimeLuxon';
 
 function UserRecent({ posts, setPosts }) {
   const { userId } = useParams();
-  // const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(posts ? false : true);
 
   useEffect(() => {
@@ -48,7 +47,10 @@ function UserRecent({ posts, setPosts }) {
               <div key={post._id} className={styles.post}>
                 <p className={styles.relativeTimeAndBlog}>
                   {toRelativeTimeLuxon(post.created_at)} •{' '}
-                  <NavLink className={styles.blogTitle}>
+                  <NavLink
+                    to={`/blogs/${post.blog._id}`}
+                    className={styles.blogTitle}
+                  >
                     Published in <span>{post.blog.title}</span>
                   </NavLink>
                 </p>

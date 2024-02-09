@@ -29,3 +29,11 @@
 .noBlogsMessage {
   font-size: 1.4rem;
 }
+
+.blog a {
+  text-decoration: none;
+}
+.blog a:link,
+.blog a:visited {
+  color: black;
+}

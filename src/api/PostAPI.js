@@ -11,6 +11,14 @@ const PostAPI = {
     }
   },
 
+  getPostsByBlog: async (blogId) => {
+    try {
+      const response = await axios.get(`/blogs/${blogId}/posts`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch posts: ${error.message}`);
+    }
+  },
   // Fetch a specific post by ID
   getPostById: async (postId) => {
     try {
