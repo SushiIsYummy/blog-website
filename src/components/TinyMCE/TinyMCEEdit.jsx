@@ -12,17 +12,19 @@ function TinyMCEEdit({ initialValue, onChange }) {
           menubar: false,
           plugins: `advlist autolink autoresize lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount`,
           toolbar:
-            'undo redo | formatselect | bold italic forecolor backcolor link | \
-            alignleft aligncenter alignright alignjustify | \
-            bullist numlist outdent indent | removeformat |',
+            'undo redo | bold italic forecolor backcolor link image alignleftimage aligncenterimage | \
+          alignleft aligncenter alignright alignjustify | \
+          bullist numlist outdent indent | removeformat |',
           link_assume_external_targets: true,
           relative_urls: false,
           remove_script_host: false,
           convert_urls: false,
           branding: false,
+          image_caption: true,
           // statusbar: false,
           autoresize_overflow_padding: 5,
           autoresize_bottom_margin: '25s',
+          fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
           object_resizing: false,
           resize: 'vertical',
           content_css: '/src/components/TinyMCE/tinymce-styles-edit.css',

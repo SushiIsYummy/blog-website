@@ -40,6 +40,12 @@ function Blog() {
               <div key={post._id} className={styles.post}>
                 <div className={styles.imageContainer}>
                   <img src='/images/no-image.jpg' alt='' />
+                  {/* <img
+                    src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsTnQRtsNQsZd-lWVZ1gAfZdIqikuNMpJB3g&usqp=CAU'
+                    alt=''
+                  /> */}
+                  {/* <img src='https://upload.wikimedia.org/wikipedia/en/a/a6/Pok%C3%A9mon_Pikachu_art.png'></img> */}
+                  {/* <img src='https://a1cf74336522e87f135f-2f21ace9a6cf0052456644b80fa06d4f.ssl.cf2.rackcdn.com/images/characters/large/800/Patrick-Star.SpongeBob-SquarePants.webp'></img> */}
                 </div>
                 <div className={styles.postTitleAndContent}>
                   <h1 className={styles.postTitle}>{post.title}</h1>

@@ -2,11 +2,13 @@ import { Outlet } from 'react-router-dom';
 import './index.css';
 import Header from './pages/Header/Header';
 import ErrorPage from './pages/Error/ErrorPage';
-import Home from './pages/Home/Home';
-import { loader as HomeLoader } from './pages/Home/Home';
-import { loader as userProfileLoader } from './pages/UserProfile/UserProfile';
+import UserProfile, {
+  loader as userProfileLoader,
+} from './pages/UserProfile/UserProfile';
+import Home, { loader as HomeLoader } from './pages/Home/Home';
+import Post, { loader as postLoader } from './pages/Post/Post';
 import Blog, { loader as blogLoader } from './pages/Blog/Blog';
-import UserProfile from './pages/UserProfile/UserProfile';
+import EditPost, { loader as editPostLoader } from './pages/EditPost/EditPost';
 
 const routesConfig = [
   {
@@ -44,6 +46,16 @@ const routesConfig = [
             path: 'blogs/:blogId',
             element: <Blog />,
             loader: blogLoader,
+          },
+          {
+            path: 'posts/:postId',
+            element: <Post />,
+            loader: postLoader,
+          },
+          {
+            path: 'new-post',
+            element: <EditPost />,
+            loader: editPostLoader,
           },
         ],
       },

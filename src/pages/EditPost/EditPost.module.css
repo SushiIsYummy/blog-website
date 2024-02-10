@@ -1,0 +1,26 @@
+.postContainer {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+  width: 100%;
+}
+
+.publishButton {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.newPostForm {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
