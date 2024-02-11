@@ -30,9 +30,9 @@ const PostAPI = {
   },
 
   // Add a new post
-  addPost: async (postData) => {
+  createPost: async (blogId, postData) => {
     try {
-      const response = await axios.post('/posts', postData);
+      const response = await axios.post(`/blogs/${blogId}/posts`, postData);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to add post: ${error.message}`);

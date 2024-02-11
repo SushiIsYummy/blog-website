@@ -10,6 +10,7 @@ function Header() {
             <h1 className={styles.logo}>CoolBlog</h1>
           </NavLink>
           <div className={styles.mainNav}>
+            <NavLink to={'/new-post'}>New Post</NavLink>
             <NavLink to={`/`}>Sign in</NavLink>
           </div>
         </nav>
