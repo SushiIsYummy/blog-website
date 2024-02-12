@@ -37,3 +37,10 @@
 .mainNav a:visited {
   color: white;
 }
+
+.profile_photo {
+  width: 32px;
+  height: 32px;
+  background-color: rgb(211, 211, 211);
+  cursor: pointer;
+}

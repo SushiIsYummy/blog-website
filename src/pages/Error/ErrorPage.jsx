@@ -1,9 +1,9 @@
-import { useRouteError } from 'react-router-dom'
-import styles from './ErrorPage.module.css'
+import { useRouteError, NavLink } from 'react-router-dom';
+import styles from './ErrorPage.module.css';
 
 export default function ErrorPage() {
-  const error = useRouteError()
-  console.error(error)
+  const error = useRouteError();
+  console.error(error);
   return (
     <div id='error-page' className={styles.errorPage}>
       <h1>Oops!</h1>
@@ -11,7 +11,9 @@ export default function ErrorPage() {
       <p>
         <i>{error && (error.statusText || error.message)}</i>
       </p>
-      <p>Please refresh the page or navigate to another page.</p>
+      <p>
+        Back to <NavLink to={'/'}>Home</NavLink>
+      </p>
     </div>
-  )
+  );
 }

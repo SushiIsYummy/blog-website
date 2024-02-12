@@ -3,6 +3,8 @@ import styles from './Home.module.css';
 import { DateTime } from 'luxon';
 import {} from 'react-router-dom';
 import PostAPI from '../../api/PostAPI';
+import AuthContext from '../../context/AuthProvider';
+import { useContext } from 'react';
 
 export async function loader() {
   try {
@@ -17,19 +19,22 @@ export async function loader() {
 function Home() {
   let { postsResponse } = useLoaderData();
   const posts = postsResponse.data.posts;
+  const { user } = useContext(AuthContext);
 
   return (
     <div className={styles.home}>
-      <section className={styles.heroSectionContainer}>
-        <div className={styles.heroSection}>
-          <h1>CoolBlog, Blogs for cool people</h1>
-          <p>
-            Explore narratives, perspectives, and knowledge shared by writers
-            covering a wide array of topics.
-          </p>
-          <button className={styles.getStartedButton}>Get Started</button>
-        </div>
-      </section>
+      {user.role === 'guest' && (
+        <section className={styles.heroSectionContainer}>
+          <div className={styles.heroSection}>
+            <h1>CoolBlog, Blogs for cool people</h1>
+            <p>
+              Explore narratives, perspectives, and knowledge shared by writers
+              covering a wide array of topics.
+            </p>
+            <button className={styles.getStartedButton}>Get Started</button>
+          </div>
+        </section>
+      )}
       <section className={styles.topPostsContainer}>
         <h1>Top Posts</h1>
         <div className={styles.topPosts}>

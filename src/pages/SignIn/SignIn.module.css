@@ -1,0 +1,10 @@
+.signInPage {
+  display: flex;
+  justify-content: center;
+}
+
+.signInForm {
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+}

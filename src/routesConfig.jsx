@@ -8,7 +8,8 @@ import UserProfile, {
 import Home, { loader as HomeLoader } from './pages/Home/Home';
 import Post, { loader as postLoader } from './pages/Post/Post';
 import Blog, { loader as blogLoader } from './pages/Blog/Blog';
-import EditPost, { loader as editPostLoader } from './pages/EditPost/EditPost';
+import EditPost from './pages/EditPost/EditPost';
+import SignIn from './pages/SignIn/SignIn';
 
 const routesConfig = [
   {
@@ -55,7 +56,11 @@ const routesConfig = [
           {
             path: 'new-post',
             element: <EditPost />,
-            loader: editPostLoader,
+            // loader: editPostLoader,
+          },
+          {
+            path: 'sign-in',
+            element: <SignIn />,
           },
         ],
       },

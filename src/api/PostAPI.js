@@ -4,7 +4,9 @@ const PostAPI = {
   // Fetch all posts
   getAllPosts: async (queryParams = {}) => {
     try {
-      const response = await axios.get('/posts', { params: queryParams });
+      const response = await axios.get('/posts', {
+        params: queryParams,
+      });
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch posts: ${error.message}`);
