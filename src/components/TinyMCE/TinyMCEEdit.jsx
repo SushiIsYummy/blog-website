@@ -23,10 +23,10 @@ function TinyMCEEdit({ initialValue, onChange }) {
           image_caption: true,
           // statusbar: false,
           autoresize_overflow_padding: 5,
-          autoresize_bottom_margin: '25s',
+          // autoresize_bottom_margin: '25s',
           fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
           object_resizing: false,
-          resize: 'vertical',
+          // resize: 'vertical',
           content_css: '/src/components/TinyMCE/tinymce-styles-edit.css',
         }}
         value={initialValue}

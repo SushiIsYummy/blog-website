@@ -1,0 +1,13 @@
+.textAreaContainer {
+  position: relative;
+}
+
+.textAreaContainer textarea {
+  resize: none;
+  overflow: hidden;
+  border: none;
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+}

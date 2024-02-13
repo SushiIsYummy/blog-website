@@ -37,7 +37,7 @@ const PostAPI = {
       const response = await axios.post(`/blogs/${blogId}/posts`, postData);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to add post: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 

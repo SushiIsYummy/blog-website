@@ -6,7 +6,7 @@ import AuthContext from '../../context/AuthProvider';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 
 function SignIn() {
-  const { setUser, signIn, isLoggedIn } = useContext(AuthContext);
+  const { signIn, isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const { state: locationState } = useLocation();
 
@@ -35,13 +35,6 @@ function SignIn() {
       console.error(err);
     }
   };
-
-  if (isLoggedIn) {
-    return navigate(-1, { replace: true });
-  }
-  // if (!locationState) {
-  //   return navigate(-1);
-  // }
 
   return (
     <div className={styles.signInPage}>

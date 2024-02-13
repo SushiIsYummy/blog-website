@@ -1,31 +1,36 @@
-import { useLoaderData, NavLink, Form } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './EditPost.module.css';
 import BlogAPI from '../../api/BlogAPI';
 import PostAPI from '../../api/PostAPI';
-import TinyMCEView from '../../components/TinyMCE/TinyMCEView';
 import TinyMCEEdit from '../../components/TinyMCE/TinyMCEEdit';
 import { useEffect, useState } from 'react';
-import TinyMCEInput from '../../components/TinyMCE/TinyMCEInput';
-import Modal from '../../components/Modal/Modal';
 import './EditPost.css';
 import { useContext } from 'react';
 import AuthContext from '../../context/AuthProvider';
+import EditPostModal from './EditPostModal/EditPostModal';
+import AutoResizeTextArea from '../../components/AutoResizeTextArea/AutoResizeTextArea';
+import checkImageValidity from '../../utils/checkImageValidity';
 
 function EditPost() {
   const [title, setTitle] = useState('');
   const [subheading, setSubheading] = useState('');
   const [content, setContent] = useState('');
-  const [modalOpen, setModalOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const [coverImage, setCoverImage] = useState(null);
-  const [blogId, setBlogId] = useState(null);
+  const [coverImageInput, setCoverImageInput] = useState('');
+  const [selectedBlogId, setSelectedBlogId] = useState(null);
   const [userBlogs, setUserBlogs] = useState([]);
-  const { auth, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // TODO: do not allow user to create a post without having at least one blog
 
   useEffect(() => {
     async function getUserBlogs() {
       try {
         const blogsResponse = await BlogAPI.getBlogsByUser(user.userId);
         setUserBlogs(blogsResponse.data.blogs);
+        setSelectedBlogId(blogsResponse.data.blogs[0]._id);
       } catch (err) {
         console.error(err);
       }
@@ -35,14 +40,41 @@ function EditPost() {
     }
   }, [user]);
 
-  const handleImageUpload = (event) => {
-    const selectedImage = event.target.files[0];
-    setCoverImage(selectedImage);
+  const handleImageUpload = async (imageUrl) => {
+    const isValidImage = await checkImageValidity(imageUrl);
+    if (isValidImage) {
+      setCoverImage(imageUrl);
+    } else {
+      setCoverImage(null);
+    }
   };
-  const handleTitleChange = (newTitle, editor) => {
+
+  // below function is for uploading local files
+  // const handleImageUpload = (event) => {
+  //   const selectedImage = event.target.files[0];
+
+  //   if (selectedImage) {
+  //     const reader = new FileReader();
+
+  //     reader.onload = function (event) {
+  //       const imageData = event.target.result;
+  //       setCoverImageData(imageData);
+  //     };
+
+  //     reader.readAsDataURL(selectedImage);
+  //     setCoverImage(selectedImage);
+  //   }
+  // };
+
+  const handleOnClearButtonClick = () => {
+    setCoverImage(null);
+    setCoverImageInput('');
+  };
+
+  const handleTitleChange = (newTitle) => {
     setTitle(newTitle);
   };
-  const handleSubheadingChange = (newSubheading, editor) => {
+  const handleSubheadingChange = (newSubheading) => {
     setSubheading(newSubheading);
   };
   const handleContentChange = (newContent, editor) => {
@@ -50,17 +82,18 @@ function EditPost() {
   };
 
   const publishPost = async () => {
-    // e.preventDefault();
     try {
-      const response = await PostAPI.createPost(blogId, {
+      const response = await PostAPI.createPost(selectedBlogId, {
         title,
         subheading,
         content,
         published: true,
-        cover_image: null,
+        cover_image: coverImage,
       });
-      // setSavedAboutContent(editAboutContent);
-      // setEditMode(false);
+      const postId = response?.data?.post?._id;
+      if (postId) {
+        navigate(`/posts/${postId}`);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -77,47 +110,45 @@ function EditPost() {
             Publish
           </button>
           <div className='title'>
-            <TinyMCEInput
+            <AutoResizeTextArea
               content={title}
-              placeholder={'Title'}
-              onChange={handleTitleChange}
+              onTextChange={handleTitleChange}
+              placeholder='Title'
+              style={{
+                fontSize: '32px',
+                fontWeight: 'bold',
+                fontFamily: 'Arial, sans-serif',
+              }}
             />
           </div>
           <div className='subheading'>
-            <TinyMCEInput
+            <AutoResizeTextArea
               content={subheading}
-              placeholder={'Subheading'}
-              onChange={handleSubheadingChange}
+              onTextChange={handleSubheadingChange}
+              placeholder='Subheading'
+              style={{
+                fontSize: '20px',
+                color: 'gray',
+                fontFamily: 'Arial, sans-serif',
+              }}
             />
           </div>
           <TinyMCEEdit initialValue={content} onChange={handleContentChange} />
         </div>
       </div>
       {modalOpen && (
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-          <button onClick={() => setModalOpen(false)}>X</button>
-          <p>select cover image</p>
-          <input
-            type='file'
-            id='img'
-            name='img'
-            accept='image/*'
-            onChange={handleImageUpload}
-          />
-          <div className={styles.imageContainer}>
-            <img
-              src={
-                coverImage
-                  ? URL.createObjectURL(coverImage)
-                  : '/images/no-image.jpg'
-              }
-              alt=''
-            />
-          </div>
-          <button className={styles.publishNow} onClick={publishPost}>
-            Publish Now
-          </button>
-        </Modal>
+        <EditPostModal
+          setModalOpen={setModalOpen}
+          handleImageUpload={handleImageUpload}
+          handleOnClearButtonClick={handleOnClearButtonClick}
+          coverImage={coverImage}
+          selectedBlogId={selectedBlogId}
+          setSelectedBlogId={setSelectedBlogId}
+          userBlogs={userBlogs}
+          publishPost={publishPost}
+          coverImageInput={coverImageInput}
+          setCoverImageInput={setCoverImageInput}
+        />
       )}
     </div>
   );
