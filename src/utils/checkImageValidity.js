@@ -8,6 +8,7 @@ async function checkImageValidity(imageUrl) {
     console.log('Image URL is not an external link');
     return false;
   }
+
   try {
     await loadImage(imageUrl);
     console.log('Image is valid');

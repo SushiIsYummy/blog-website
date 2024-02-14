@@ -2,6 +2,7 @@ import { useLoaderData, NavLink } from 'react-router-dom';
 import styles from './Blog.module.css';
 import BlogAPI from '../../api/BlogAPI';
 import PostAPI from '../../api/PostAPI';
+import convertHtmlStringToRawContent from '../../utils/convertHtmlStringToRawContent';
 
 export async function loader({ params }) {
   try {
@@ -49,7 +50,11 @@ function Blog() {
                 </div>
                 <div className={styles.postTitleAndContent}>
                   <h1 className={styles.postTitle}>{post.title}</h1>
-                  <p className={styles.postContent}>{post.content}</p>
+                  <p className={styles.postContent}>
+                    {post.subheading
+                      ? post.subheading
+                      : convertHtmlStringToRawContent(post.content)}
+                  </p>
                 </div>
               </div>
             );

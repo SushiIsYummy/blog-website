@@ -2,7 +2,8 @@ import { useParams, NavLink } from 'react-router-dom';
 import styles from './UserRecent.module.css';
 import { useState, useEffect } from 'react';
 import PostAPI from '../../../../api/PostAPI';
-import { toRelativeTimeLuxon } from '../../../../utils/toRelativeTimeLuxon';
+import toRelativeTimeLuxon from '../../../../utils/toRelativeTimeLuxon';
+import convertHtmlStringToRawContent from '../../../../utils/convertHtmlStringToRawContent';
 
 function UserRecent({ posts, setPosts }) {
   const { userId } = useParams();
@@ -55,7 +56,11 @@ function UserRecent({ posts, setPosts }) {
                   </NavLink>
                 </p>
                 <p className={styles.postTitle}>{post.title}</p>
-                <p className={styles.postContent}>{post.content}</p>
+                <p className={styles.postContent}>
+                  {post.subheading
+                    ? post.subheading
+                    : convertHtmlStringToRawContent(post.content)}
+                </p>
               </div>
             );
           })}
