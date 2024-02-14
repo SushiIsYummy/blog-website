@@ -1,34 +1,40 @@
 import { createContext, useEffect, useState } from 'react';
 import AuthAPI from '../api/AuthAPI';
+import axios from '../api/config/axiosConfig';
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
-
+  console.log(user);
   useEffect(() => {
     checkAuthenticationStatus();
   }, []);
 
   const checkAuthenticationStatus = async () => {
     try {
-      const response = await AuthAPI.checkStatus();
+      let response = await axios.get('/auth/status');
+      response = response.data;
       const role = response?.data?.user?.role;
       setIsLoggedIn(role === 'guest' ? false : true);
       setUser(response.data.user);
     } catch (error) {
-      throw Error('Error checking authentication status:', error);
+      console.log(error);
+      throw new Error(JSON.stringify(error.response.data));
     }
   };
 
   const signIn = async (username, password) => {
     try {
-      const response = await AuthAPI.signIn({ username, password });
+      let response = await axios.post('/auth/login', { username, password });
+      response = response.data;
+      console.log(response);
       setIsLoggedIn(true);
       setUser(response?.data?.user);
     } catch (error) {
-      throw Error('Error signing in:', error);
+      console.log(error);
+      throw new Error(JSON.stringify(error.response.data));
     }
   };
 

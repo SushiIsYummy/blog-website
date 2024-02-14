@@ -38,3 +38,8 @@
   color: white;
   cursor: pointer;
 }
+
+.errorMsg {
+  word-break: break-word;
+  color: red;
+}

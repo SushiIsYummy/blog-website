@@ -4,6 +4,7 @@ import AuthAPI from '../../api/AuthAPI';
 import { useState, useContext, useEffect } from 'react';
 import AuthContext from '../../context/AuthProvider';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
+import underscoreToCamelCase from '../../utils/underscoreToCamelCase';
 
 function SignIn() {
   const { signIn, isLoggedIn } = useContext(AuthContext);
@@ -12,6 +13,12 @@ function SignIn() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+    usernameAndPassword: '',
+  });
 
   const onUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -32,7 +39,26 @@ function SignIn() {
         navigate('/');
       }
     } catch (err) {
-      console.error(err);
+      console.log(err);
+      const newErrors = {};
+      const errMessageParsed = JSON.parse(err.message ?? null);
+      let responseErrors = errMessageParsed.data?.errors;
+      if (responseErrors) {
+        responseErrors.map((error) => {
+          newErrors[`${underscoreToCamelCase(error.path)}`] = error.msg;
+        });
+        setErrors(newErrors);
+      }
+      let responseError = errMessageParsed.data?.error;
+      console.log(responseError);
+      if (responseError) {
+        setErrors({
+          username: '',
+          password: '',
+          usernameAndPassword: responseError.message,
+        });
+      }
+      console.error(err.message);
     }
   };
 
@@ -49,6 +75,7 @@ function SignIn() {
             value={username}
             onChange={onUsernameChange}
           />
+          <span className={styles.errorMsg}>{errors.username}</span>
         </div>
         <div className={styles.formField}>
           <label htmlFor='password'>Password</label>
@@ -59,6 +86,8 @@ function SignIn() {
             value={password}
             onChange={onPasswordChange}
           />
+          <span className={styles.errorMsg}>{errors.password}</span>
+          <span className={styles.errorMsg}>{errors.usernameAndPassword}</span>
         </div>
         <button className={styles.signInButton}>Sign In</button>
         <p>

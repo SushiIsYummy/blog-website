@@ -7,6 +7,7 @@ const AuthAPI = {
       const response = await axios.post('/auth/login', postData);
       return response.data;
     } catch (error) {
+      console.log(error);
       throw new Error(JSON.stringify(error.response.data));
     }
   },
