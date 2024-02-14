@@ -21,7 +21,7 @@ async function checkImageValidity(imageUrl) {
 
 function loadImage(url) {
   return new Promise((resolve, reject) => {
-    var img = new Image();
+    const img = new Image();
     img.onload = resolve;
     img.onerror = reject;
     img.src = url;

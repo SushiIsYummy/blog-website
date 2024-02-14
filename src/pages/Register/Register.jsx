@@ -4,6 +4,8 @@ import AuthAPI from '../../api/AuthAPI';
 import { useState, useContext, useEffect } from 'react';
 import AuthContext from '../../context/AuthProvider';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
+import UserAPI from '../../api/UserAPI';
+import underscoreToCamelCase from '../../utils/underscoreToCamelCase';
 
 function Register() {
   const { signIn } = useContext(AuthContext);
@@ -16,10 +18,27 @@ function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [errors, setErrors] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+  });
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      const response = await UserAPI.createUser({
+        first_name: firstName,
+        last_name: lastName,
+        username: username,
+        password: password,
+        confirm_password: confirmPassword,
+      });
+
       await signIn(username, password);
+
       if (locationState) {
         const { redirectTo } = locationState;
         navigate(`${redirectTo.pathname}${redirectTo.search}`);
@@ -27,7 +46,16 @@ function Register() {
         navigate('/');
       }
     } catch (err) {
-      console.error(err);
+      const newErrors = {};
+      const errMessageParsed = JSON.parse(err.message ?? null);
+      let responseErrors = errMessageParsed.data?.errors;
+      if (responseErrors) {
+        responseErrors.map((error) => {
+          newErrors[`${underscoreToCamelCase(error.path)}`] = error.msg;
+        });
+        setErrors(newErrors);
+      }
+      console.error(err.message);
     }
   };
 
@@ -37,55 +65,60 @@ function Register() {
         <h1>Register</h1>
         <div className={styles.name}>
           <div className={styles.formField}>
-            <label htmlFor=''>First Name</label>
+            <label htmlFor='firstName'>First Name</label>
             <input
               type='text'
+              id='firstName'
               name='first_name'
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
-            <span className={styles.errorMsg}></span>
+            <span className={styles.errorMsg}>{errors.firstName}</span>
           </div>
           <div className={styles.formField}>
-            <label htmlFor=''>Last Name</label>
+            <label htmlFor='lastName'>Last Name</label>
             <input
               type='text'
+              id='lastName'
               name='last_name'
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
-            <span className={styles.errorMsg}></span>
+            <span className={styles.errorMsg}>{errors.lastName}</span>
           </div>
         </div>
         <div className={styles.formField}>
-          <label htmlFor=''>Username</label>
+          <label htmlFor='username'>Username</label>
           <input
             type='text'
+            id='username'
             name='username'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          <span className={styles.errorMsg}></span>
+          <span className={styles.errorMsg}>{errors.username}</span>
         </div>
         <div className={styles.formField}>
-          <label htmlFor=''>Password</label>
+          <label htmlFor='password'>Password</label>
           <input
             type='password'
+            id='password'
             name='password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <span className={styles.errorMsg}></span>
+          <span className={styles.errorMsg}>{errors.password}</span>
         </div>
         <div className={styles.formField}>
-          <label htmlFor=''>Confirm Password</label>
+          <label htmlFor='confirmPassword'>Confirm Password</label>
           <input
             type='password'
+            id='confirmPassword'
             name='confirm_password'
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <span className={styles.errorMsg}></span>
+          <span className={styles.errorMsg}>{errors.confirmPassword}</span>
         </div>
         <button className={styles.registerButton}>Register</button>
         <p>

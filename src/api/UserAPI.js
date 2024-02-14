@@ -23,9 +23,9 @@ const UserAPI = {
   },
 
   // Add a new user
-  addUser: async (userData) => {
+  createUser: async (userData) => {
     try {
-      const response = await axios.user('/users', userData);
+      const response = await axios.post('/users', userData);
       return response.data;
     } catch (error) {
       throw new Error(JSON.stringify(error.response.data));

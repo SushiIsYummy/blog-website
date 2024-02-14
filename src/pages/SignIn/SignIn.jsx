@@ -41,18 +41,20 @@ function SignIn() {
       <Form className={styles.signInForm} onSubmit={onSubmit}>
         <h1>Sign In</h1>
         <div className={styles.formField}>
-          <label htmlFor=''>Username</label>
+          <label htmlFor='username'>Username</label>
           <input
             type='text'
+            id='username'
             name='username'
             value={username}
             onChange={onUsernameChange}
           />
         </div>
         <div className={styles.formField}>
-          <label htmlFor=''>Password</label>
+          <label htmlFor='password'>Password</label>
           <input
             type='password'
+            id='password'
             name='password'
             value={password}
             onChange={onPasswordChange}
