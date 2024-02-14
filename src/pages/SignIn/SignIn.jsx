@@ -1,4 +1,4 @@
-import { Form, redirect } from 'react-router-dom';
+import { Form, NavLink } from 'react-router-dom';
 import styles from './SignIn.module.css';
 import AuthAPI from '../../api/AuthAPI';
 import { useState, useContext, useEffect } from 'react';
@@ -40,21 +40,29 @@ function SignIn() {
     <div className={styles.signInPage}>
       <Form className={styles.signInForm} onSubmit={onSubmit}>
         <h1>Sign In</h1>
-        <p>Username</p>
-        <input
-          type='text'
-          name='username'
-          value={username}
-          onChange={onUsernameChange}
-        />
-        <p>Password</p>
-        <input
-          type='password'
-          name='password'
-          value={password}
-          onChange={onPasswordChange}
-        />
-        <button>Sign In</button>
+        <div className={styles.formField}>
+          <label htmlFor=''>Username</label>
+          <input
+            type='text'
+            name='username'
+            value={username}
+            onChange={onUsernameChange}
+          />
+        </div>
+        <div className={styles.formField}>
+          <label htmlFor=''>Password</label>
+          <input
+            type='password'
+            name='password'
+            value={password}
+            onChange={onPasswordChange}
+          />
+        </div>
+        <button className={styles.signInButton}>Sign In</button>
+        <p>
+          Don&apos;t have an account?{' '}
+          <NavLink to={`/register`}>Register</NavLink>
+        </p>
       </Form>
     </div>
   );

@@ -8,7 +8,7 @@ const UserAPI = {
 
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch users: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -18,7 +18,7 @@ const UserAPI = {
       const response = await axios.get(`/users/${userId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch user: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -28,7 +28,7 @@ const UserAPI = {
       const response = await axios.user('/users', userData);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to add user: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -38,7 +38,7 @@ const UserAPI = {
       const response = await axios.put(`/users/${userId}`, userData);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to update user: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -47,7 +47,7 @@ const UserAPI = {
       const response = await axios.put(`/users/${userId}/about`, userData);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to update user: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -57,7 +57,7 @@ const UserAPI = {
       const response = await axios.delete(`/users/${userId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to delete user: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 };

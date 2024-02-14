@@ -10,6 +10,7 @@ import Post, { loader as postLoader } from './pages/Post/Post';
 import Blog, { loader as blogLoader } from './pages/Blog/Blog';
 import EditPost from './pages/EditPost/EditPost';
 import SignIn from './pages/SignIn/SignIn';
+import Register from './pages/Register/Register';
 
 const routesConfig = [
   {
@@ -61,6 +62,10 @@ const routesConfig = [
           {
             path: 'sign-in',
             element: <SignIn />,
+          },
+          {
+            path: 'register',
+            element: <Register />,
           },
         ],
       },

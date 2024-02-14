@@ -48,3 +48,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.post a {
+  text-decoration: none;
+}
+.post a:link,
+.post a:visited {
+  color: black;
+}

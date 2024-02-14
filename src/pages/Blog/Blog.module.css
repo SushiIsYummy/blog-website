@@ -5,7 +5,7 @@
 }
 
 .blog {
-  padding: 0px 20px 0px;
+  padding: 0px 20px 20px;
   width: 1200px;
   min-width: 0;
 }
@@ -44,6 +44,14 @@
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   border-radius: 7px;
   overflow: hidden;
+}
+
+.post {
+  text-decoration: none;
+}
+.post:link,
+.post:visited {
+  color: black;
 }
 
 .imageContainer {

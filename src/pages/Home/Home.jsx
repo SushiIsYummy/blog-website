@@ -31,7 +31,9 @@ function Home() {
               Explore narratives, perspectives, and knowledge shared by writers
               covering a wide array of topics.
             </p>
-            <button className={styles.getStartedButton}>Get Started</button>
+            <NavLink to={'/register'}>
+              <button className={styles.getStartedButton}>Get Started</button>
+            </NavLink>
           </div>
         </section>
       )}

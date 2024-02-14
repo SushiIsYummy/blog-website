@@ -7,7 +7,7 @@ const BlogAPI = {
       const response = await axios.get('/blogs', { params: queryParams });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch blogs: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -17,7 +17,7 @@ const BlogAPI = {
       const response = await axios.get(`/blogs/${blogId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch blog: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -26,7 +26,7 @@ const BlogAPI = {
       const response = await axios.get(`/users/${userId}/blogs`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch blog: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -36,7 +36,7 @@ const BlogAPI = {
       const response = await axios.blog('/blogs', blogData);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to add blog: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -46,7 +46,7 @@ const BlogAPI = {
       const response = await axios.put(`/blogs/${blogId}`, blogData);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to update blog: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -56,7 +56,7 @@ const BlogAPI = {
       const response = await axios.delete(`/blogs/${blogId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to delete blog: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 };

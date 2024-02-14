@@ -55,12 +55,14 @@ function UserRecent({ posts, setPosts }) {
                     Published in <span>{post.blog.title}</span>
                   </NavLink>
                 </p>
-                <p className={styles.postTitle}>{post.title}</p>
-                <p className={styles.postContent}>
-                  {post.subheading
-                    ? post.subheading
-                    : convertHtmlStringToRawContent(post.content)}
-                </p>
+                <NavLink to={`/posts/${post._id}`}>
+                  <p className={styles.postTitle}>{post.title}</p>
+                  <p className={styles.postContent}>
+                    {post.subheading
+                      ? post.subheading
+                      : convertHtmlStringToRawContent(post.content)}
+                  </p>
+                </NavLink>
               </div>
             );
           })}

@@ -7,7 +7,7 @@ const AuthAPI = {
       const response = await axios.post('/auth/login', postData);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to sign in: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -16,7 +16,7 @@ const AuthAPI = {
       const response = await axios.get('/auth/status');
       return response.data;
     } catch (error) {
-      throw new Error(`Failed while checking login status: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 };

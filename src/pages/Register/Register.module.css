@@ -1,18 +1,29 @@
-.signInPage {
+.registerPage {
   display: flex;
   justify-content: center;
   padding: 20px;
 }
 
-.signInForm {
+.registerForm {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 400px;
+  max-width: 500px;
 }
 
-.signInForm h1 {
+.registerForm h1 {
   text-align: center;
+}
+
+.name {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.name .formField {
+  flex: 1;
+  width: 100%;
 }
 
 .formField {
@@ -30,7 +41,12 @@
   padding: 5px;
 }
 
-.signInButton {
+.errorMsg {
+  word-break: break-word;
+  color: red;
+}
+
+.registerButton {
   padding: 10px;
   font-weight: bold;
   border: none;

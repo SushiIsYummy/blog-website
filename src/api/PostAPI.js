@@ -9,7 +9,7 @@ const PostAPI = {
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch posts: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -18,7 +18,7 @@ const PostAPI = {
       const response = await axios.get(`/blogs/${blogId}/posts`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch posts: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
   // Fetch a specific post by ID
@@ -27,7 +27,7 @@ const PostAPI = {
       const response = await axios.get(`/posts/${postId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch post: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 
@@ -57,7 +57,7 @@ const PostAPI = {
       const response = await axios.delete(`/posts/${postId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to delete post: ${error.message}`);
+      throw new Error(JSON.stringify(error.response.data));
     }
   },
 };
