@@ -38,8 +38,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signOut = async () => {
+    try {
+      let response = await axios.post('/auth/logout');
+      response = response.data;
+      console.log(response);
+      setIsLoggedIn(false);
+      setUser({ role: 'guest' });
+    } catch (error) {
+      console.log(error);
+      throw new Error(JSON.stringify(error.response.data));
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, signIn, isLoggedIn }}>
+    <AuthContext.Provider
+      value={{ user, setUser, signIn, signOut, isLoggedIn }}
+    >
       {children}
     </AuthContext.Provider>
   );

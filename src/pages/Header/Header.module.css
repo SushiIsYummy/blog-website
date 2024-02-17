@@ -5,7 +5,7 @@
 }
 
 .logo {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   padding: 0 5px;
   color: white;
 }
@@ -25,17 +25,21 @@
   gap: 10px;
 }
 
+.mainNav a:visited {
+  color: white;
+}
+
 .mainNav a {
   font-size: 1.3rem;
   color: white;
 }
 
-.headerNav a {
-  text-decoration: none;
+.writeButton {
+  font-size: 10px;
 }
 
-.mainNav a:visited {
-  color: white;
+.headerNav a {
+  text-decoration: none;
 }
 
 .profile_photo {

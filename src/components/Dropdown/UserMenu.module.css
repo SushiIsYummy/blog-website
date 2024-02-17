@@ -1,0 +1,52 @@
+.userMenu {
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.userMenu span {
+  word-break: break-word;
+}
+
+.userMenu > button[type='button'] {
+  border: none;
+  cursor: pointer;
+}
+
+.userMenu img {
+  width: 32px;
+  height: 32px;
+  vertical-align: middle;
+}
+
+.userMenu ul {
+  background-color: white;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.userMenu li {
+  list-style-type: none;
+}
+
+.userMenu li[role='menuitem'] button {
+  padding: 7px 15px;
+  color: rgb(109, 109, 109);
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  word-break: break-word;
+  font-size: 1.1rem;
+}
+
+.userMenu li[role='menuitem'] button:hover {
+  color: black;
+}
+
+.divider {
+  height: 1px;
+  margin: 5px 0;
+  background-color: rgb(211, 211, 211);
+}
