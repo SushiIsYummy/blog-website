@@ -11,6 +11,8 @@ import Blog, { loader as blogLoader } from './pages/Blog/Blog';
 import EditPost from './pages/EditPost/EditPost';
 import SignIn from './pages/SignIn/SignIn';
 import Register from './pages/Register/Register';
+import Dashboard from './pages/Dashboard/Dashboard';
+import { DashboardSidebarProvider } from './context/DashboardSidebarContext';
 
 const routesConfig = [
   {
@@ -38,9 +40,11 @@ const routesConfig = [
             children: [
               {
                 path: 'about',
+                element: <UserProfile />,
               },
               {
                 path: 'blogs',
+                element: <UserProfile />,
               },
             ],
           },
@@ -57,7 +61,6 @@ const routesConfig = [
           {
             path: 'new-post',
             element: <EditPost />,
-            // loader: editPostLoader,
           },
           {
             path: 'sign-in',
@@ -66,6 +69,10 @@ const routesConfig = [
           {
             path: 'register',
             element: <Register />,
+          },
+          {
+            path: 'dashboard',
+            element: <Dashboard />,
           },
         ],
       },

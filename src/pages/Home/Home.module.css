@@ -1,7 +1,13 @@
-.home {
+.homeContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
   padding: 20px;
-  margin: auto;
-  max-width: 1200px;
+}
+
+.home {
+  width: 1200px;
+  min-width: 0;
 }
 
 .heroSectionContainer {

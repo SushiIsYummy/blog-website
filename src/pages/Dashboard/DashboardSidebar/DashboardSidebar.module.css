@@ -1,0 +1,72 @@
+.sidebar {
+  width: 300px;
+  background-color: #333333;
+  transform: translateX(-300px);
+  margin-right: -300px;
+  transition:
+    transform 0.5s,
+    margin-right 0.5s;
+}
+
+.sidebar.isSmallScreen {
+  position: fixed;
+  height: 100%;
+}
+
+.sidebar.open {
+  transform: translateX(0px);
+  margin-right: 0;
+}
+
+.sidebar ul {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+  list-style-type: none;
+  color: white;
+}
+
+li.blogSelect {
+  padding: 5px 0 5px 15px;
+}
+
+li.blogSelect p {
+  font-size: 1rem;
+}
+
+.sidebar li:not(.blogSelect) button {
+  padding: 5px 0 5px 15px;
+  width: 100%;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+}
+
+.sidebar li button:not(.blogSelect) {
+  cursor: pointer;
+}
+
+.sidebar li:not(.blogSelect) button:hover {
+  background-color: #555555;
+  border-radius: 7px;
+  color: white;
+}
+
+.blogSelect {
+  display: flex;
+  gap: 10px;
+}
+
+.newBlogButton {
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: rgb(42, 165, 42);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: flex-end;
+}

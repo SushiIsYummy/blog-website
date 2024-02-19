@@ -1,21 +1,31 @@
 import styles from './Header.module.css';
-import { useEffect, useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthProvider';
 import { useContext } from 'react';
-import { Dropdown } from 'flowbite-react';
 import UserMenu from '../../components/Dropdown/UserMenu';
+import { useDashboardSidebar } from '../../context/DashboardSidebarContext';
+import { GiHamburgerMenu } from 'react-icons/gi';
 
 function Header() {
   const { user } = useContext(AuthContext);
   const location = useLocation();
+  const { toggleDashboardSidebar } = useDashboardSidebar();
+  const onDashboardPage = location.pathname.startsWith('/dashboard');
 
   return (
     <header className={styles.header}>
       <nav className={styles.headerNav}>
-        <NavLink to={'/'}>
-          <h1 className={styles.logo}>CoolBlog</h1>
-        </NavLink>
+        <div className={styles.leftSide}>
+          {onDashboardPage ? (
+            <GiHamburgerMenu
+              className={styles.hamburgerMenu}
+              onClick={toggleDashboardSidebar}
+            ></GiHamburgerMenu>
+          ) : null}
+          <NavLink to={'/'}>
+            <h1 className={styles.logo}>CoolBlog</h1>
+          </NavLink>
+        </div>
         <div className={styles.mainNav}>
           {user?.role === 'guest' && (
             <NavLink to={`/sign-in`} state={{ redirectTo: location }}>

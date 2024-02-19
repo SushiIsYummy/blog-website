@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from 'react';
-import AuthAPI from '../api/AuthAPI';
 import axios from '../api/config/axiosConfig';
 
 const AuthContext = createContext({});
@@ -7,9 +6,12 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
-  console.log(user);
+
   useEffect(() => {
-    checkAuthenticationStatus();
+    async function setAuthState() {
+      await checkAuthenticationStatus();
+    }
+    setAuthState();
   }, []);
 
   const checkAuthenticationStatus = async () => {
