@@ -7,21 +7,74 @@
 .post {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
-}
-
-.postContent {
   width: 700px;
 }
 
-.author {
+.postTitle {
+  font-size: 2.6rem;
+  margin-top: 20px;
+}
+
+.postSubheading {
+  color: gray;
+  font-weight: normal;
+  margin-top: 10px;
+}
+
+.postInfo {
   display: flex;
   align-items: center;
+  gap: 10px;
   padding: 20px 0px;
-  border-top: 1px solid gray;
 }
 
 .authorImage {
   width: 60px;
   height: 60px;
+  border-radius: 50%;
+}
+
+.postInfo .rightSide {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.postInfo .rightSide > * {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.authorName {
+  font-size: 1.3rem;
+}
+
+.publishedIn {
+  color: rgb(85, 85, 85);
+}
+
+.blogLink:link,
+.blogLink:visited {
+  color: black;
+  text-decoration: none;
+}
+
+.blogLink:hover {
+  text-decoration: underline;
+}
+
+.votesAndComments {
+  padding: 10px 5px;
+}
+
+.upvoteButton {
+  width: 40px;
+  height: 40px;
+  padding: 3px;
+  border-radius: 50%;
+}
+
+.upvoteButton:hover {
+  background-color: rgb(209, 209, 209);
 }

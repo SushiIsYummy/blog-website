@@ -115,7 +115,7 @@ function EditPost() {
               onTextChange={handleTitleChange}
               placeholder='Title'
               style={{
-                fontSize: '32px',
+                fontSize: '2.6rem',
                 fontWeight: 'bold',
                 fontFamily: 'Arial, sans-serif',
               }}
@@ -127,7 +127,7 @@ function EditPost() {
               onTextChange={handleSubheadingChange}
               placeholder='Subheading'
               style={{
-                fontSize: '20px',
+                fontSize: '1.4rem',
                 color: 'gray',
                 fontFamily: 'Arial, sans-serif',
               }}
