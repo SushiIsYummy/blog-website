@@ -3,10 +3,11 @@ import styles from './Post.module.css';
 import PostAPI from '../../api/PostAPI';
 import TinyMCEView from '../../components/TinyMCE/TinyMCEView';
 import toRelativeTimeLuxon from '../../utils/toRelativeTimeLuxon';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import VotingWidget from '../../components/VotingWidget/VotingWidget';
-import AuthContext from '../../context/AuthProvider';
 import _debounce from 'lodash/debounce';
+import { useMediaQuery } from '@react-hook/media-query';
+import { FaRegComment } from 'react-icons/fa';
 
 export async function loader({ params }) {
   try {
@@ -23,22 +24,25 @@ export async function loader({ params }) {
 
 function Post() {
   let { postResponse, votesResponse } = useLoaderData();
-  const { user } = useContext(AuthContext);
   const post = postResponse.data.post;
   const upvotesOnPost = votesResponse.data.upvotes;
   const downvotesOnPost = votesResponse.data.downvotes;
   const userVote = votesResponse.data.user_vote;
-  const [voteOption, setVoteOption] = useState(userVote || 'NEUTRAL');
+  const isMaxWidth768 = useMediaQuery('(max-width: 768px)');
   // const isFirstRender = useRef(true);
+
+  const [currentVote, setCurrentVote] = useState(userVote);
+  const [upvotes, setUpvotes] = useState(upvotesOnPost);
+  const [downvotes, setDownvotes] = useState(downvotesOnPost);
 
   useEffect(() => {
     async function updateVote() {
       try {
-        if (voteOption === 'NEUTRAL') {
+        if (currentVote === 'NEUTRAL') {
           const vote = PostAPI.deleteVoteOnPost(post._id);
         } else {
           const updatedVote = PostAPI.updateVoteOnPost(post._id, {
-            vote_value: voteOption,
+            vote_value: currentVote,
           });
         }
       } catch (err) {
@@ -68,60 +72,97 @@ function Post() {
       debouncedRequest.cancel();
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [post._id, userVote, voteOption]);
-
-  console.log(votesResponse);
-  console.log(user.userId);
-
-  function handleVote(vote) {
-    setVoteOption(vote);
-  }
+  }, [currentVote, post._id, userVote]);
 
   return (
     <div className={styles.postContainer}>
-      <div className={styles.post}>
-        <h1 className={styles.postTitle}>{post.title}</h1>
-        {post.subheading !== '' && (
-          <h2 className={styles.postSubheading}>{post.subheading}</h2>
-        )}
-        <div className={styles.postInfo}>
-          <img
-            className={styles.authorImage}
-            src={
-              post.author.profile_photo !== null
-                ? post.author.profile_photo
-                : '/images/default_profile_photo.jpg'
-            }
-            alt=''
-          />
-          <div className={styles.rightSide}>
-            <p className={styles.authorName}>
-              {post.author.first_name} {post.author.last_name}
-            </p>
-            <div className={styles.publishedIn}>
-              <p>
-                Published in&nbsp;
-                <NavLink
-                  className={styles.blogLink}
-                  to={`/blogs/${post.blog._id}`}
-                >
-                  {post.blog.title}
-                </NavLink>
-                &nbsp;• {toRelativeTimeLuxon(post.created_at)}
-              </p>
-            </div>
-          </div>
-        </div>
+      {!isMaxWidth768 && (
         <div className={styles.votesAndComments}>
           <VotingWidget
-            initialVoteOption={voteOption}
-            initialUpvotes={upvotesOnPost}
-            initialDownvotes={downvotesOnPost}
-            onVote={handleVote}
+            orientation={'vertical'}
+            currentVote={currentVote}
+            setCurrentVote={setCurrentVote}
+            upvotes={upvotes}
+            downvotes={downvotes}
+            setUpvotes={setUpvotes}
+            setDownvotes={setDownvotes}
           />
+          <FaRegComment style={{ width: '20px', height: '20px' }} />
         </div>
-        <div className={styles.postContent}>
-          <TinyMCEView content={post.content}></TinyMCEView>
+      )}
+      <div className={styles.post}>
+        {post.cover_image && (
+          <div className={styles.coverImageContainer}>
+            <img src={post.cover_image ? post.cover_image : null} alt='' />
+          </div>
+        )}
+        <div className={styles.postBody}>
+          <h1 className={styles.postTitle}>{post.title}</h1>
+          {post.subheading !== '' && (
+            <h2 className={styles.postSubheading}>{post.subheading}</h2>
+          )}
+          <div className={styles.postInfo}>
+            <img
+              className={styles.authorImage}
+              src={
+                post.author.profile_photo !== null
+                  ? post.author.profile_photo
+                  : '/images/default_profile_photo.jpg'
+              }
+              alt=''
+            />
+            <div className={styles.rightSide}>
+              <NavLink
+                className={styles.authorName}
+                to={`/users/${post.author._id}`}
+              >
+                {post.author.first_name} {post.author.last_name}
+              </NavLink>
+              <div className={styles.publishedIn}>
+                <p>
+                  Published in&nbsp;
+                  <NavLink
+                    className={styles.blogLink}
+                    to={`/blogs/${post.blog._id}`}
+                  >
+                    {post.blog.title}
+                  </NavLink>
+                  &nbsp;• {toRelativeTimeLuxon(post.created_at)}
+                </p>
+              </div>
+            </div>
+          </div>
+          {isMaxWidth768 && (
+            <div className={`${styles.votesAndComments}`}>
+              <VotingWidget
+                orientation={'horizontal'}
+                currentVote={currentVote}
+                setCurrentVote={setCurrentVote}
+                upvotes={upvotes}
+                downvotes={downvotes}
+                setUpvotes={setUpvotes}
+                setDownvotes={setDownvotes}
+              />
+              <FaRegComment style={{ width: '20px', height: '20px' }} />
+            </div>
+          )}
+          <div className={styles.postContent}>
+            <TinyMCEView content={post.content}></TinyMCEView>
+          </div>
+          {isMaxWidth768 && (
+            <div className={`${styles.votesAndComments}`}>
+              <VotingWidget
+                orientation={'horizontal'}
+                currentVote={currentVote}
+                setCurrentVote={setCurrentVote}
+                upvotes={upvotes}
+                downvotes={downvotes}
+                setUpvotes={setUpvotes}
+                setDownvotes={setDownvotes}
+              />
+              <FaRegComment style={{ width: '20px', height: '20px' }} />
+            </div>
+          )}
         </div>
       </div>
     </div>

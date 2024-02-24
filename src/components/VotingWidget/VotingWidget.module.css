@@ -6,9 +6,13 @@
   border-radius: 5px;
 }
 
-.votingWidget.upvoted {
+.votingWidget.vertical {
+  flex-direction: column;
 }
-.votingWidget.downvoted {
+
+.votingWidget.vertical .upvoteContainer,
+.votingWidget.vertical .downvoteContainer {
+  flex-direction: column;
 }
 
 .solidUpvoteButton,

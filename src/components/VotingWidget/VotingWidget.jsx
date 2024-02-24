@@ -6,7 +6,6 @@ import {
   BiSolidDownvote,
 } from 'react-icons/bi';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
 const voteOptions = {
   UPVOTE: 'UPVOTE',
@@ -15,17 +14,17 @@ const voteOptions = {
 };
 
 function VotingWidget({
-  initialVoteOption,
-  initialUpvotes = 0,
-  initialDownvotes = 0,
+  orientation = 'horizontal',
+  currentVote,
+  setCurrentVote,
+  upvotes,
+  setUpvotes,
+  downvotes,
+  setDownvotes,
   iconSize = '25',
-  onVote,
 }) {
-  const upvoteOffset = initialVoteOption === 'UPVOTE' ? -1 : 0;
-  const downvoteOffset = initialVoteOption === 'DOWNVOTE' ? -1 : 0;
-  const [currentVote, setCurrentVote] = useState(initialVoteOption);
-  const [upvotes, setUpvotes] = useState(initialUpvotes);
-  const [downvotes, setDownvotes] = useState(initialDownvotes);
+  const upvoteOffset = currentVote === 'UPVOTE' ? -1 : 0;
+  const downvoteOffset = currentVote === 'DOWNVOTE' ? -1 : 0;
 
   function handleVoteClick(e) {
     let className;
@@ -41,12 +40,10 @@ function VotingWidget({
       setCurrentVote(voteOptions.UPVOTE);
       setUpvotes(upvotes + 1 + upvoteOffset);
       setDownvotes(downvotes + downvoteOffset);
-      onVote && onVote(voteOptions.UPVOTE);
     } else if (className === styles.downvoteButton) {
       setCurrentVote(voteOptions.DOWNVOTE);
       setUpvotes(upvotes + upvoteOffset);
       setDownvotes(downvotes + 1 + downvoteOffset);
-      onVote && onVote(voteOptions.DOWNVOTE);
     } else if (
       className === styles.solidUpvoteButton ||
       className === styles.solidDownvoteButton
@@ -54,12 +51,13 @@ function VotingWidget({
       setCurrentVote(voteOptions.NEUTRAL);
       setUpvotes(upvotes + upvoteOffset);
       setDownvotes(downvotes + downvoteOffset);
-      onVote && onVote(voteOptions.NEUTRAL);
     }
   }
 
   return (
-    <div className={styles.votingWidget}>
+    <div
+      className={`${styles.votingWidget} ${orientation === 'vertical' ? styles.vertical : ''}`}
+    >
       {currentVote === voteOptions.UPVOTE ? (
         <div className={styles.upvoteContainer}>
           <button
@@ -121,15 +119,18 @@ function VotingWidget({
 }
 
 VotingWidget.propTypes = {
-  initialVoteOption: PropTypes.oneOf([
+  orientation: PropTypes.oneOf(['horizontal', 'vertical']),
+  currentVote: PropTypes.oneOf([
     voteOptions.UPVOTE,
     voteOptions.DOWNVOTE,
     voteOptions.NEUTRAL,
   ]),
-  initialDownvotes: PropTypes.number,
-  initialUpvotes: PropTypes.number,
+  setCurrentVote: PropTypes.func,
+  downvotes: PropTypes.number,
+  setDownvotes: PropTypes.func,
+  upvotes: PropTypes.number,
+  setUpvotes: PropTypes.func,
   iconSize: PropTypes.number,
-  onVote: PropTypes.func,
 };
 
 export default VotingWidget;
