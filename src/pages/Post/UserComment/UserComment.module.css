@@ -1,0 +1,60 @@
+.userComment {
+  display: flex;
+  gap: 10px;
+}
+
+.userComment img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.userComment textarea {
+  border-bottom: 1px solid black;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  align-self: flex-start;
+  font-size: 1rem;
+}
+
+.userComment .rightSide {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.userCommentActionButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  align-self: flex-end;
+}
+
+.userCommentActionButtons button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.userCommentActionButtons .cancelButton {
+  background-color: transparent;
+}
+
+.userCommentActionButtons .cancelButton:hover {
+  background-color: rgba(192, 192, 192, 0.5);
+}
+
+.userCommentActionButtons .commentButton:disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgb(162, 154, 142);
+}
+.userCommentActionButtons .commentButton:enabled {
+  background-color: #0082c9;
+  color: white;
+}
+
+.userCommentActionButtons .commentButton:enabled:hover {
+  background-color: #1d94d4;
+  color: white;
+}

@@ -1,21 +1,25 @@
-import { useLoaderData, NavLink } from 'react-router-dom';
+import { useLoaderData, NavLink, useOutletContext } from 'react-router-dom';
 import styles from './Post.module.css';
 import PostAPI from '../../api/PostAPI';
 import TinyMCEView from '../../components/TinyMCE/TinyMCEView';
 import toRelativeTimeLuxon from '../../utils/toRelativeTimeLuxon';
 import { useEffect, useRef, useState } from 'react';
 import VotingWidget from '../../components/VotingWidget/VotingWidget';
-import _debounce from 'lodash/debounce';
+import _ from 'lodash';
 import { useMediaQuery } from '@react-hook/media-query';
 import { FaRegComment } from 'react-icons/fa';
+import UserComment from './UserComment/UserComment';
+import Comment from './Comment/Comment';
+import scrollToElementWithOffset from '../../utils/scrollToElementWithOffset';
 
 export async function loader({ params }) {
   try {
-    const [postResponse, votesResponse] = await Promise.all([
+    const [postResponse, votesResponse, commentsResponse] = await Promise.all([
       PostAPI.getPostById(params.postId),
       PostAPI.getVotesOnPost(params.postId),
+      PostAPI.getCommentsOnPost(params.postId),
     ]);
-    return { postResponse, votesResponse };
+    return { postResponse, votesResponse, commentsResponse };
   } catch (err) {
     console.error(err);
   }
@@ -23,8 +27,10 @@ export async function loader({ params }) {
 }
 
 function Post() {
-  let { postResponse, votesResponse } = useLoaderData();
+  const { headerRef } = useOutletContext();
+  let { postResponse, votesResponse, commentsResponse } = useLoaderData();
   const post = postResponse.data.post;
+  const initialComments = commentsResponse.data.comments;
   const upvotesOnPost = votesResponse.data.upvotes;
   const downvotesOnPost = votesResponse.data.downvotes;
   const userVote = votesResponse.data.user_vote;
@@ -34,6 +40,9 @@ function Post() {
   const [currentVote, setCurrentVote] = useState(userVote);
   const [upvotes, setUpvotes] = useState(upvotesOnPost);
   const [downvotes, setDownvotes] = useState(downvotesOnPost);
+
+  const [comments, setComments] = useState(initialComments || []);
+  const [userCommentLoading, setUserCommentLoading] = useState(false);
 
   useEffect(() => {
     async function updateVote() {
@@ -56,7 +65,7 @@ function Post() {
     //   return;
     // }
 
-    const debouncedRequest = _debounce(updateVote, 1000);
+    const debouncedRequest = _.debounce(updateVote, 1000);
     debouncedRequest();
 
     // update vote even if user closes tab or refreshes
@@ -74,6 +83,42 @@ function Post() {
     };
   }, [currentVote, post._id, userVote]);
 
+  async function onUserCommentCommentClick(comment) {
+    try {
+      setUserCommentLoading(true);
+      const createdComment = await PostAPI.createCommentOnPost(post._id, {
+        content: comment,
+      });
+      setComments([createdComment.data.postComment, ...comments]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUserCommentLoading(false);
+    }
+  }
+
+  const commentsSection = useRef(null);
+  const commentBadge = (
+    <div
+      className={`${styles.commentBadge} ${isMaxWidth768 ? styles.horizontal : styles.vertical}`}
+      onClick={jumpToComments}
+    >
+      <FaRegComment
+        className={styles.commentIcon}
+        style={{ width: '20px', height: '20px' }}
+      />
+      <p>{comments.length}</p>
+    </div>
+  );
+  function jumpToComments() {
+    if (commentsSection.current) {
+      const headerHeight = parseFloat(
+        window.getComputedStyle(headerRef.current).height,
+      );
+      scrollToElementWithOffset(commentsSection.current, headerHeight);
+    }
+  }
+
   return (
     <div className={styles.postContainer}>
       {!isMaxWidth768 && (
@@ -87,7 +132,7 @@ function Post() {
             setUpvotes={setUpvotes}
             setDownvotes={setDownvotes}
           />
-          <FaRegComment style={{ width: '20px', height: '20px' }} />
+          {commentBadge}
         </div>
       )}
       <div className={styles.post}>
@@ -126,8 +171,8 @@ function Post() {
                     to={`/blogs/${post.blog._id}`}
                   >
                     {post.blog.title}
-                  </NavLink>
-                  &nbsp;• {toRelativeTimeLuxon(post.created_at)}
+                  </NavLink>{' '}
+                  • {toRelativeTimeLuxon(post.created_at)}
                 </p>
               </div>
             </div>
@@ -143,7 +188,7 @@ function Post() {
                 setUpvotes={setUpvotes}
                 setDownvotes={setDownvotes}
               />
-              <FaRegComment style={{ width: '20px', height: '20px' }} />
+              {commentBadge}
             </div>
           )}
           <div className={styles.postContent}>
@@ -160,9 +205,33 @@ function Post() {
                 setUpvotes={setUpvotes}
                 setDownvotes={setDownvotes}
               />
-              <FaRegComment style={{ width: '20px', height: '20px' }} />
+              {commentBadge}
             </div>
           )}
+          <div ref={commentsSection} className={styles.commentsHeader}>
+            <h2 className={styles.commentsLabel}>{comments.length} Comments</h2>
+            <div className={styles.userComment}>
+              {!userCommentLoading ? (
+                <>
+                  <UserComment
+                    profilePic={post.author.profile_photo}
+                    onUserCommentCommentClick={onUserCommentCommentClick}
+                    userCommentLoading={userCommentLoading}
+                    setUserCommentLoading={setUserCommentLoading}
+                  />
+                </>
+              ) : (
+                <div className={styles.userCommentLoading}>
+                  <p>loading...</p>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className={styles.comments}>
+            {comments.map((comment) => {
+              return <Comment key={comment._id} commentData={comment} />;
+            })}
+          </div>
         </div>
       </div>
     </div>

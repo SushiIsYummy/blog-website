@@ -1,6 +1,4 @@
-import { Outlet } from 'react-router-dom';
 import './index.css';
-import Header from './pages/Header/Header';
 import ErrorPage from './pages/Error/ErrorPage';
 import UserProfile, {
   loader as userProfileLoader,
@@ -12,15 +10,20 @@ import EditPost from './pages/EditPost/EditPost';
 import SignIn from './pages/SignIn/SignIn';
 import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
-import { DashboardSidebarProvider } from './context/DashboardSidebarContext';
+import Layout from './Layout';
+import { ScrollRestoration } from 'react-router-dom';
 
 const routesConfig = [
   {
     path: '/',
     element: (
       <>
-        <Header />
-        <Outlet />
+        <Layout />
+        <ScrollRestoration
+          getKey={(location, matches) => {
+            return location.key;
+          }}
+        />
       </>
     ),
     errorElement: <ErrorPage />,

@@ -112,6 +112,7 @@ function EditPost() {
           <div className='title'>
             <AutoResizeTextArea
               content={title}
+              allowLineBreak={false}
               onTextChange={handleTitleChange}
               placeholder='Title'
               style={{
@@ -124,6 +125,7 @@ function EditPost() {
           <div className='subheading'>
             <AutoResizeTextArea
               content={subheading}
+              allowLineBreak={false}
               onTextChange={handleSubheadingChange}
               placeholder='Subheading'
               style={{

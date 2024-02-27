@@ -1,0 +1,26 @@
+.comment {
+  display: flex;
+  gap: 10px;
+}
+
+.comment img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.comment textarea {
+  border-bottom: 1px solid black;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  align-self: flex-start;
+}
+
+.comment .rightSide {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+span.commentCreationDate {
+  color: gray;
+}

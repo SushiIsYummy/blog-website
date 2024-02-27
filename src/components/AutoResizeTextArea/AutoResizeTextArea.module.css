@@ -1,8 +1,4 @@
-.textAreaContainer {
-  position: relative;
-}
-
-.textAreaContainer textarea {
+textarea {
   resize: none;
   overflow: hidden;
   border: none;

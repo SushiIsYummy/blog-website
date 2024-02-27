@@ -51,7 +51,7 @@ const PostAPI = {
     }
   },
 
-  // Delete an post
+  // Delete a post
   deletePost: async (postId) => {
     try {
       const response = await axios.delete(`/posts/${postId}`);
@@ -87,6 +87,44 @@ const PostAPI = {
       throw new Error(JSON.stringify(error.response.data));
     }
   },
+
+  getCommentsOnPost: async (postId) => {
+    try {
+      const response = await axios.get(`/posts/${postId}/comments`);
+      return response.data;
+    } catch (error) {
+      throw new Error(JSON.stringify(error.response.data));
+    }
+  },
+
+  createCommentOnPost: async (postId, commentData) => {
+    try {
+      const response = await axios.post(
+        `/posts/${postId}/comments`,
+        commentData,
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(JSON.stringify(error.response.data));
+    }
+  },
+  // updateCommentOnPost: async (postId, voteData) => {
+  //   try {
+  //     const response = await axios.put(`/posts/${postId}/votes/vote`, voteData);
+  //     return response.data;
+  //   } catch (error) {
+  //     throw new Error(JSON.stringify(error.response.data));
+  //   }
+  // },
+
+  // deleteCommentOnPost: async (postId) => {
+  //   try {
+  //     const response = await axios.delete(`/posts/${postId}/votes/vote`);
+  //     return response.data;
+  //   } catch (error) {
+  //     throw new Error(JSON.stringify(error.response.data));
+  //   }
+  // },
 };
 
 export default PostAPI;

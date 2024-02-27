@@ -6,14 +6,14 @@ import UserMenu from '../../components/Dropdown/UserMenu';
 import { useDashboardSidebar } from '../../context/DashboardSidebarContext';
 import { GiHamburgerMenu } from 'react-icons/gi';
 
-function Header() {
+function Header({ headerRef }) {
   const { user } = useContext(AuthContext);
   const location = useLocation();
   const { toggleDashboardSidebar } = useDashboardSidebar();
   const onDashboardPage = location.pathname.startsWith('/dashboard');
 
   return (
-    <header className={styles.header}>
+    <header ref={headerRef} className={styles.header}>
       <nav className={styles.headerNav}>
         <div className={styles.leftSide}>
           {onDashboardPage ? (

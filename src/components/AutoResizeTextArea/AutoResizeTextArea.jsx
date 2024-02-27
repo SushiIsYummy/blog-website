@@ -1,40 +1,65 @@
-import { useState } from 'react';
-import styles from './AutoResizeTextArea.module.css';
+import { useEffect, useRef } from 'react';
+import './AutoResizeTextArea.module.css';
+import PropTypes from 'prop-types';
 
 const AutoResizeTextArea = ({
   onTextChange,
   content,
   placeholder = '',
-  initialRows = '1',
+  initialRows = 1,
+  allowLineBreak = true,
   style,
+  onClick,
 }) => {
-  function handleOnInput(e) {
-    const textArea = e.target;
-    textArea.style.height = 'auto';
-    textArea.style.height = textArea.scrollHeight + 'px';
+  const textAreaRef = useRef(null);
+
+  // make sure textarea is resized when the input is changed
+  // via user typing or programmatically
+  useEffect(() => {
+    handleResize();
+  }, [content]);
+
+  function handleResize() {
+    const textArea = textAreaRef.current;
+    if (textArea) {
+      textArea.style.height = 'auto';
+      textArea.style.height = textArea.scrollHeight + 'px';
+    }
   }
 
-  function handleOnKeyDown(e) {
-    // Prevent default behavior of pressing Enter key
+  function handleOnEnterDown(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
     }
   }
 
+  function handleOnChange(e) {
+    handleResize();
+    onTextChange && onTextChange(e.target.value);
+  }
+
   return (
-    <div className={styles.textAreaContainer}>
-      <textarea
-        rows={initialRows}
-        placeholder={placeholder}
-        onInput={handleOnInput}
-        onKeyDown={handleOnKeyDown}
-        onChange={(e) => onTextChange(e.target.value)}
-        style={style}
-      >
-        {content}
-      </textarea>
-    </div>
+    <textarea
+      ref={textAreaRef}
+      rows={initialRows}
+      placeholder={placeholder}
+      onKeyDown={!allowLineBreak ? handleOnEnterDown : undefined}
+      onChange={handleOnChange}
+      onClick={onClick}
+      style={style}
+      value={content}
+    ></textarea>
   );
+};
+
+AutoResizeTextArea.propTypes = {
+  content: PropTypes.string,
+  onTextChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  initialRows: PropTypes.number,
+  allowLineBreak: PropTypes.bool,
+  style: PropTypes.object,
+  onClick: PropTypes.func,
 };
 
 export default AutoResizeTextArea;

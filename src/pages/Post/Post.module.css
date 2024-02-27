@@ -13,7 +13,7 @@
 .post {
   display: flex;
   flex-direction: column;
-  width: 700px;
+  width: 800px;
   overflow: hidden;
 }
 
@@ -102,15 +102,47 @@ a.blogLink:hover {
   border-bottom: 1px solid rgba(143, 143, 143, 0.3);
 }
 
-.upvoteButton {
-  width: 40px;
-  height: 40px;
-  padding: 3px;
-  border-radius: 50%;
+.commentBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
 }
 
-.upvoteButton:hover {
-  background-color: rgb(209, 209, 209);
+.commentBadge.horizontal {
+  flex-direction: row;
+}
+
+.commentBadge:hover {
+}
+
+.commentsHeader {
+  padding: 20px 0;
+}
+
+.userComment {
+  margin: 10px 0;
+}
+
+.userCommentLoading {
+  display: flex;
+  justify-content: center;
+}
+
+.userCommentError {
+  display: flex;
+  justify-content: center;
+}
+
+.userCommentError p {
+  color: red;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 @media screen and (min-width: 460px) {
