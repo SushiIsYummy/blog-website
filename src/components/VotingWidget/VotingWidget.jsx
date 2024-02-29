@@ -8,9 +8,9 @@ import {
 import PropTypes from 'prop-types';
 
 const voteOptions = {
-  UPVOTE: 'UPVOTE',
-  DOWNVOTE: 'DOWNVOTE',
-  NEUTRAL: 'NEUTRAL',
+  UPVOTE: 1,
+  NEUTRAL: 0,
+  DOWNVOTE: -1,
 };
 
 function VotingWidget({
@@ -23,8 +23,8 @@ function VotingWidget({
   setDownvotes,
   iconSize = '25',
 }) {
-  const upvoteOffset = currentVote === 'UPVOTE' ? -1 : 0;
-  const downvoteOffset = currentVote === 'DOWNVOTE' ? -1 : 0;
+  const upvoteOffset = currentVote === voteOptions.UPVOTE ? -1 : 0;
+  const downvoteOffset = currentVote === voteOptions.DOWNVOTE ? -1 : 0;
 
   function handleVoteClick(e) {
     let className;

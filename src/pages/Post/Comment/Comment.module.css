@@ -18,9 +18,19 @@
 .comment .rightSide {
   display: flex;
   flex-direction: column;
+  gap: 3px;
   flex: 1;
 }
 
 span.commentCreationDate {
   color: gray;
+}
+
+.commentContent {
+}
+
+span.commentLine {
+  display: block;
+  word-break: break-word;
+  margin: 2px 0;
 }

@@ -10,6 +10,7 @@ const AutoResizeTextArea = ({
   allowLineBreak = true,
   style,
   onClick,
+  onFocus,
 }) => {
   const textAreaRef = useRef(null);
 
@@ -45,7 +46,8 @@ const AutoResizeTextArea = ({
       placeholder={placeholder}
       onKeyDown={!allowLineBreak ? handleOnEnterDown : undefined}
       onChange={handleOnChange}
-      onClick={onClick}
+      onClick={onClick ? onClick : undefined}
+      onFocus={onFocus ? onFocus : undefined}
       style={style}
       value={content}
     ></textarea>
@@ -60,6 +62,7 @@ AutoResizeTextArea.propTypes = {
   allowLineBreak: PropTypes.bool,
   style: PropTypes.object,
   onClick: PropTypes.func,
+  onFocus: PropTypes.func,
 };
 
 export default AutoResizeTextArea;

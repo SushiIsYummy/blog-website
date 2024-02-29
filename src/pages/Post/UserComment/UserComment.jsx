@@ -2,6 +2,7 @@ import styles from './UserComment.module.css';
 import AutoResizeTextArea from '../../../components/AutoResizeTextArea/AutoResizeTextArea';
 import { useState } from 'react';
 import _trimStart from 'lodash/trimStart';
+import PropTypes from 'prop-types';
 
 function UserComment({
   profilePic,
@@ -23,8 +24,8 @@ function UserComment({
     setUserComment(comment);
   }
 
-  function handleUserCommentClick(e) {
-    if (e.target.value === '') {
+  function handleUserCommentFocus(e) {
+    if (e.target.value === '' && !showCommentActionButtons) {
       setShowCommentActionButtons(true);
     }
   }
@@ -66,7 +67,7 @@ function UserComment({
           allowLineBreak={true}
           onTextChange={handleUserCommentChange}
           placeholder='Add a comment...'
-          onClick={handleUserCommentClick}
+          onFocus={handleUserCommentFocus}
         />
         {showCommentActionButtons && (
           <div className={styles.userCommentActionButtons}>
@@ -89,5 +90,11 @@ function UserComment({
     </div>
   );
 }
+
+UserComment.propTypes = {
+  profilePic: PropTypes.string,
+  onUserCommentCommentClick: PropTypes.func,
+  onUserCancelClick: PropTypes.func,
+};
 
 export default UserComment;

@@ -1,7 +1,6 @@
 import axios from './config/axiosConfig';
 
 const PostAPI = {
-  // Fetch all posts
   getAllPosts: async (queryParams = {}) => {
     try {
       const response = await axios.get('/posts', {
@@ -21,7 +20,7 @@ const PostAPI = {
       throw new Error(JSON.stringify(error.response.data));
     }
   },
-  // Fetch a specific post by ID
+
   getPostById: async (postId) => {
     try {
       const response = await axios.get(`/posts/${postId}`);
@@ -31,7 +30,6 @@ const PostAPI = {
     }
   },
 
-  // Add a new post
   createPost: async (blogId, postData) => {
     try {
       const response = await axios.post(`/blogs/${blogId}/posts`, postData);
@@ -41,7 +39,6 @@ const PostAPI = {
     }
   },
 
-  // Update an existing post
   updatePost: async (postId, postData) => {
     try {
       const response = await axios.put(`/posts/${postId}`, postData);
@@ -51,7 +48,6 @@ const PostAPI = {
     }
   },
 
-  // Delete a post
   deletePost: async (postId) => {
     try {
       const response = await axios.delete(`/posts/${postId}`);
@@ -108,23 +104,30 @@ const PostAPI = {
       throw new Error(JSON.stringify(error.response.data));
     }
   },
-  // updateCommentOnPost: async (postId, voteData) => {
-  //   try {
-  //     const response = await axios.put(`/posts/${postId}/votes/vote`, voteData);
-  //     return response.data;
-  //   } catch (error) {
-  //     throw new Error(JSON.stringify(error.response.data));
-  //   }
-  // },
 
-  // deleteCommentOnPost: async (postId) => {
-  //   try {
-  //     const response = await axios.delete(`/posts/${postId}/votes/vote`);
-  //     return response.data;
-  //   } catch (error) {
-  //     throw new Error(JSON.stringify(error.response.data));
-  //   }
-  // },
+  updateCommentVoteOnPost: async (postId, commentId, commentData) => {
+    try {
+      const response = await axios.put(
+        `/posts/${postId}/comments/${commentId}/votes/vote`,
+        commentData,
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(JSON.stringify(error.response.data));
+    }
+  },
+
+  deleteCommentVoteOnPost: async (postId, commentId, commentData) => {
+    try {
+      const response = await axios.delete(
+        `/posts/${postId}/comments/${commentId}/votes/vote`,
+        commentData,
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(JSON.stringify(error.response.data));
+    }
+  },
 };
 
 export default PostAPI;

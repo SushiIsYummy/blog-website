@@ -14,28 +14,35 @@ import scrollToElementWithOffset from '../../utils/scrollToElementWithOffset';
 
 export async function loader({ params }) {
   try {
-    const [postResponse, votesResponse, commentsResponse] = await Promise.all([
-      PostAPI.getPostById(params.postId),
-      PostAPI.getVotesOnPost(params.postId),
-      PostAPI.getCommentsOnPost(params.postId),
-    ]);
-    return { postResponse, votesResponse, commentsResponse };
+    const [postResponse, postVotesResponse, commentsResponse] =
+      await Promise.all([
+        PostAPI.getPostById(params.postId),
+        PostAPI.getVotesOnPost(params.postId),
+        PostAPI.getCommentsOnPost(params.postId),
+      ]);
+    return { postResponse, postVotesResponse, commentsResponse };
   } catch (err) {
     console.error(err);
   }
   return null;
 }
 
+const voteOptions = {
+  UPVOTE: 1,
+  NEUTRAL: 0,
+  DOWNVOTE: -1,
+};
+
 function Post() {
   const { headerRef } = useOutletContext();
-  let { postResponse, votesResponse, commentsResponse } = useLoaderData();
+  let { postResponse, postVotesResponse, commentsResponse } = useLoaderData();
   const post = postResponse.data.post;
   const initialComments = commentsResponse.data.comments;
-  const upvotesOnPost = votesResponse.data.upvotes;
-  const downvotesOnPost = votesResponse.data.downvotes;
-  const userVote = votesResponse.data.user_vote;
+  const upvotesOnPost = postVotesResponse.data.upvotes;
+  const downvotesOnPost = postVotesResponse.data.downvotes;
+  const userVote = postVotesResponse.data.user_vote;
   const isMaxWidth768 = useMediaQuery('(max-width: 768px)');
-  // const isFirstRender = useRef(true);
+  const isFirstRender = useRef(true);
 
   const [currentVote, setCurrentVote] = useState(userVote);
   const [upvotes, setUpvotes] = useState(upvotesOnPost);
@@ -47,10 +54,13 @@ function Post() {
   useEffect(() => {
     async function updateVote() {
       try {
-        if (currentVote === 'NEUTRAL') {
-          const vote = PostAPI.deleteVoteOnPost(post._id);
-        } else {
-          const updatedVote = PostAPI.updateVoteOnPost(post._id, {
+        if (currentVote === voteOptions.NEUTRAL) {
+          const vote = await PostAPI.deleteVoteOnPost(post._id);
+        } else if (
+          currentVote === voteOptions.UPVOTE ||
+          currentVote === voteOptions.DOWNVOTE
+        ) {
+          const updatedVote = await PostAPI.updateVoteOnPost(post._id, {
             vote_value: currentVote,
           });
         }
@@ -60,10 +70,10 @@ function Post() {
     }
 
     // prevent sending unnecessary request on first render
-    // if (isFirstRender.current) {
-    //   isFirstRender.current = false;
-    //   return;
-    // }
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
     const debouncedRequest = _.debounce(updateVote, 1000);
     debouncedRequest();
@@ -72,7 +82,6 @@ function Post() {
     // before debounce delay is finished
     function handleBeforeUnload() {
       debouncedRequest.flush();
-      updateVote();
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -81,7 +90,7 @@ function Post() {
       debouncedRequest.cancel();
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [currentVote, post._id, userVote]);
+  }, [currentVote, post._id]);
 
   async function onUserCommentCommentClick(comment) {
     try {
@@ -110,6 +119,7 @@ function Post() {
       <p>{comments.length}</p>
     </div>
   );
+
   function jumpToComments() {
     if (commentsSection.current) {
       const headerHeight = parseFloat(
@@ -208,29 +218,33 @@ function Post() {
               {commentBadge}
             </div>
           )}
-          <div ref={commentsSection} className={styles.commentsHeader}>
-            <h2 className={styles.commentsLabel}>{comments.length} Comments</h2>
-            <div className={styles.userComment}>
-              {!userCommentLoading ? (
-                <>
-                  <UserComment
-                    profilePic={post.author.profile_photo}
-                    onUserCommentCommentClick={onUserCommentCommentClick}
-                    userCommentLoading={userCommentLoading}
-                    setUserCommentLoading={setUserCommentLoading}
-                  />
-                </>
-              ) : (
-                <div className={styles.userCommentLoading}>
-                  <p>loading...</p>
-                </div>
-              )}
+          <div ref={commentsSection} className={styles.commentSection}>
+            <div className={styles.commentsHeader}>
+              <h2 className={styles.commentsLabel}>
+                {comments.length} Comments
+              </h2>
+              <div className={styles.userComment}>
+                {!userCommentLoading ? (
+                  <>
+                    <UserComment
+                      profilePic={post.author.profile_photo}
+                      onUserCommentCommentClick={onUserCommentCommentClick}
+                      userCommentLoading={userCommentLoading}
+                      setUserCommentLoading={setUserCommentLoading}
+                    />
+                  </>
+                ) : (
+                  <div className={styles.userCommentLoading}>
+                    <p>loading...</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-          <div className={styles.comments}>
-            {comments.map((comment) => {
-              return <Comment key={comment._id} commentData={comment} />;
-            })}
+            <div className={styles.comments}>
+              {comments.map((comment) => {
+                return <Comment key={comment._id} commentData={comment} />;
+              })}
+            </div>
           </div>
         </div>
       </div>
