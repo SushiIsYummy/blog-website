@@ -26,9 +26,6 @@ span.commentCreationDate {
   color: gray;
 }
 
-.commentContent {
-}
-
 span.commentLine {
   display: block;
   word-break: break-word;

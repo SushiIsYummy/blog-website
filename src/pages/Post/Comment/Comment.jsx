@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import PostAPI from '../../../api/PostAPI';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import ExpandableContent from '../../../components/ExpandableContent/ExpandableContent';
 
 const voteOptions = {
   UPVOTE: 1,
@@ -15,14 +16,14 @@ const voteOptions = {
 
 function Comment({ commentData }) {
   const profilePhoto = commentData.author.profile_photo;
-  const content = commentData.content;
+  const commentContent = commentData.content;
   const username = commentData.author.username;
   const commentCreationDate = toRelativeTimeLuxon(commentData.created_at);
   const commentUserId = commentData.author._id;
   const postId = commentData.post;
   const commentId = commentData._id;
   const isFirstRender = useRef(true);
-  const commentLines = content.split('\n');
+  const commentLines = commentContent.split('\n');
 
   const [currentVote, setCurrentVote] = useState(commentData.user_vote || 0);
   const [upvotes, setUpvotes] = useState(commentData.upvotes);
@@ -91,13 +92,13 @@ function Comment({ commentData }) {
             • {commentCreationDate}
           </span>
         </p>
-        <div className={styles.commentContent}>
+        <ExpandableContent>
           {commentLines.map((line, index) => (
             <span className={styles.commentLine} key={index}>
               {line}
             </span>
           ))}
-        </div>
+        </ExpandableContent>
         <div className={styles.votesAndReply}>
           <VotingWidget
             orientation={'horizontal'}
