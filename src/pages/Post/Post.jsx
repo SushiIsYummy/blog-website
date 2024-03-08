@@ -18,7 +18,7 @@ export async function loader({ params }) {
       await Promise.all([
         PostAPI.getPostById(params.postId),
         PostAPI.getVotesOnPost(params.postId),
-        PostAPI.getCommentsOnPost(params.postId),
+        PostAPI.getCommentsOnPost(params.postId, { page: 1 }),
       ]);
     return { postResponse, postVotesResponse, commentsResponse };
   } catch (err) {
@@ -228,14 +228,20 @@ function Post() {
                   <>
                     <UserComment
                       profilePic={post.author.profile_photo}
-                      onUserCommentCommentClick={onUserCommentCommentClick}
+                      onUserCommentActionClick={onUserCommentCommentClick}
                       userCommentLoading={userCommentLoading}
                       setUserCommentLoading={setUserCommentLoading}
+                      actionButtonName={'Comment'}
                     />
                   </>
                 ) : (
                   <div className={styles.userCommentLoading}>
-                    <p>loading...</p>
+                    <l-ring
+                      size='30'
+                      stroke='3'
+                      color='black'
+                      speed='1.5'
+                    ></l-ring>
                   </div>
                 )}
               </div>

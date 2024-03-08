@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import './AutoResizeTextArea.module.css';
 import PropTypes from 'prop-types';
 
 const AutoResizeTextArea = ({
+  externalTextareaRef,
   onTextChange,
   content,
   placeholder = '',
@@ -12,21 +13,14 @@ const AutoResizeTextArea = ({
   onClick,
   onFocus,
 }) => {
-  const textAreaRef = useRef(null);
-
+  const internalTextAreaRef = useRef(null);
+  const textAreaRef = externalTextareaRef || internalTextAreaRef;
+  
   // make sure textarea is resized when the input is changed
   // via user typing or programmatically
   useEffect(() => {
-    handleResize();
-  }, [content]);
-
-  function handleResize() {
-    const textArea = textAreaRef.current;
-    if (textArea) {
-      textArea.style.height = 'auto';
-      textArea.style.height = textArea.scrollHeight + 'px';
-    }
-  }
+    handleResize(textAreaRef);
+  }, [content, textAreaRef]);
 
   function handleOnEnterDown(e) {
     if (e.key === 'Enter') {
@@ -35,7 +29,9 @@ const AutoResizeTextArea = ({
   }
 
   function handleOnChange(e) {
-    handleResize();
+    if (textAreaRef.current) {
+      handleResize(textAreaRef);
+    }
     onTextChange && onTextChange(e.target.value);
   }
 
@@ -64,5 +60,13 @@ AutoResizeTextArea.propTypes = {
   onClick: PropTypes.func,
   onFocus: PropTypes.func,
 };
+
+function handleResize(textAreaRef) {
+  const textArea = textAreaRef.current;
+  if (textArea) {
+    textArea.style.height = 'auto';
+    textArea.style.height = textArea.scrollHeight + 'px';
+  }
+}
 
 export default AutoResizeTextArea;

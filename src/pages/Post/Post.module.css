@@ -1,7 +1,7 @@
 .postContainer {
   display: flex;
   justify-content: center;
-  flex: 1;
+  /* flex: 1; */
 }
 
 .postContainer a:link,
@@ -142,7 +142,7 @@ a.blogLink:hover {
 .comments {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 @media screen and (min-width: 460px) {

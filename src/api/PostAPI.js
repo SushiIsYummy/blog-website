@@ -128,6 +128,18 @@ const PostAPI = {
       throw new Error(JSON.stringify(error.response.data));
     }
   },
+
+  getRepliesOnPostComment: async (postId, commentId, queryParams) => {
+    try {
+      const response = await axios.get(
+        `/posts/${postId}/comments/${commentId}/replies`,
+        { params: queryParams },
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(JSON.stringify(error.response.data));
+    }
+  },
 };
 
 export default PostAPI;

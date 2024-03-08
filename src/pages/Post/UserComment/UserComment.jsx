@@ -1,18 +1,23 @@
 import styles from './UserComment.module.css';
 import AutoResizeTextArea from '../../../components/AutoResizeTextArea/AutoResizeTextArea';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import _trimStart from 'lodash/trimStart';
 import PropTypes from 'prop-types';
 
 function UserComment({
+  textareaRef,
   profilePic,
-  onUserCommentCommentClick,
-  onUserCancelClick,
+  profilePicSize = 40,
+  onUserCommentActionClick,
+  onUserCommentCancelClick,
+  actionButtonName,
+  actionButtonsOpenInitially,
 }) {
   const [userComment, setUserComment] = useState('');
   const [userCommentDisabled, setUserCommentDisabled] = useState(true);
-  const [showCommentActionButtons, setShowCommentActionButtons] =
-    useState(false);
+  const [showCommentActionButtons, setShowCommentActionButtons] = useState(
+    actionButtonsOpenInitially || false,
+  );
 
   function handleUserCommentChange(comment) {
     const trimmedComment = _trimStart(comment);
@@ -39,13 +44,13 @@ function UserComment({
 
   function handleUserCommentCancelClick(e) {
     resetCommentState(e);
-    onUserCancelClick && onUserCancelClick();
+    onUserCommentCancelClick && onUserCommentCancelClick();
   }
 
-  async function handleUserCommentCommentClick(e) {
-    if (onUserCommentCommentClick) {
+  async function handleUserCommentActionClick(e) {
+    if (onUserCommentActionClick) {
       try {
-        await onUserCommentCommentClick(userComment);
+        await onUserCommentActionClick(userComment);
         resetCommentState(e);
       } catch (err) {
         console.error(err);
@@ -60,9 +65,11 @@ function UserComment({
           profilePic !== null ? profilePic : '/images/default_profile_photo.jpg'
         }
         alt='user profile pic'
+        style={{ width: profilePicSize, height: profilePicSize }}
       />
       <div className={styles.rightSide}>
         <AutoResizeTextArea
+          externalTextareaRef={textareaRef}
           content={userComment}
           allowLineBreak={true}
           onTextChange={handleUserCommentChange}
@@ -80,9 +87,9 @@ function UserComment({
             <button
               disabled={userCommentDisabled}
               className={styles.commentButton}
-              onClick={handleUserCommentCommentClick}
+              onClick={handleUserCommentActionClick}
             >
-              Comment
+              {actionButtonName ? actionButtonName : 'Submit'}
             </button>
           </div>
         )}

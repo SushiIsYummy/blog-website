@@ -24,10 +24,39 @@
 
 span.commentCreationDate {
   color: gray;
+  font-size: 1rem;
 }
 
 span.commentLine {
   display: block;
   word-break: break-word;
   margin: 2px 0;
+}
+
+.votesAndReply {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.replyButton {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-weight: bolder;
+  font-size: 0.8rem;
+}
+
+.replyButton:hover {
+  background-color: rgba(192, 192, 192, 0.5);
+}
+
+.userCommentLoading {
+  display: flex;
+  justify-content: center;
+}
+
+.repliesToOriginalComment {
 }
