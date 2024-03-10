@@ -1,4 +1,4 @@
-.modalOverlay {
+/* .modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -14,10 +14,66 @@
 .modalContent {
   background-color: white;
   padding: 20px;
-  /* border-radius: 5px; */
+  border-radius: 5px;
   width: 100%;
   height: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   overflow-y: auto;
   z-index: 10;
+} */
+
+/* Modal.css */
+
+.modal {
+  display: none; /* Initially hide the modal */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1000; /* Ensure modal appears above other content */
+}
+
+.modal.open {
+  display: block; /* Show the modal when open */
+}
+
+.modalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* max-width: 80%;  */
+}
+
+.closeButtonContainer {
+  display: flex;
+  justify-content: end;
+}
+
+.closeButton {
+  /* display: block; */
+  color: #aaa;
+  line-height: 0;
+  /* vertical-align: top; */
+  border: none;
+  background-color: transparent;
+  /* text-align: right; */
+  /* float: right; */
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  height: fit-content;
+}
+
+.closeButton:hover,
+.closeButton:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }

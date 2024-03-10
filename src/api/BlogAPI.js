@@ -31,9 +31,9 @@ const BlogAPI = {
   },
 
   // Add a new blog
-  addBlog: async (blogData) => {
+  createBlog: async (blogData) => {
     try {
-      const response = await axios.blog('/blogs', blogData);
+      const response = await axios.post('/blogs', blogData);
       return response.data;
     } catch (error) {
       throw new Error(JSON.stringify(error.response.data));

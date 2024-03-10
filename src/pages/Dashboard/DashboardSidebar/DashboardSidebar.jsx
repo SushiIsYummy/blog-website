@@ -5,12 +5,20 @@ import BlogAPI from '../../../api/BlogAPI';
 import { useDashboardSidebar } from '../../../context/DashboardSidebarContext';
 import { useMediaQuery } from '@react-hook/media-query';
 
-function DashboardSidebar() {
+function DashboardSidebar({
+  openNewBlogModal,
+  blogs,
+  selectedBlog,
+  setSelectedBlog,
+  // blogAddedOrDeleted,
+  // onBlogAddedOrDeleted,
+}) {
   const { user } = useContext(AuthContext);
   const { dashboardSidebarIsOpen, closeDashboardSidebar } =
     useDashboardSidebar();
-  const [selectedBlog, setSelectedBlog] = useState('');
-  const [blogs, setBlogs] = useState([]);
+  // const [selectedBlog, setSelectedBlog] = useState('');
+  // const [blogs, setBlogs] = useState([]);
+  const [firstFetch, setFirstFetch] = useState(true);
   const isSmallScreen = useMediaQuery('(max-width: 1024px)');
   const sidebarRef = useRef(null);
 
@@ -32,23 +40,24 @@ function DashboardSidebar() {
     };
   }, [closeDashboardSidebar, dashboardSidebarIsOpen, isSmallScreen]);
 
-  useEffect(() => {
-    async function fetchBlogs() {
-      try {
-        const blogResponse = await BlogAPI.getBlogsByUser(user.userId);
-        setBlogs(blogResponse.data.blogs);
-        setSelectedBlog(blogResponse.data.blogs[0]);
-        // const postsResponse = await PostAPI.getPostsByBlog(params.blogId);
-        return { blogResponse };
-      } catch (err) {
-        console.error(err);
-      }
-    }
+  // useEffect(() => {
+  //   async function fetchBlogs() {
+  //     try {
+  //       const blogResponse = await BlogAPI.getBlogsByUser(user.userId);
+  //       setBlogs(blogResponse.data.blogs);
+  //       setSelectedBlog(blogResponse.data.blogs[0]);
+  //       // const postsResponse = await PostAPI.getPostsByBlog(params.blogId);
+  //       return { blogResponse };
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   }
 
-    if (user.userId && blogs.length === 0) {
-      fetchBlogs();
-    }
-  }, [blogs.length, user.userId]);
+  //   if (user.userId && firstFetch) {
+  //     fetchBlogs();
+  //     setFirstFetch(false);
+  //   }
+  // }, [blogs.length, user.userId, firstFetch]);
 
   function handleSidebarItemClick() {
     closeDashboardSidebar();
@@ -77,7 +86,9 @@ function DashboardSidebar() {
                 })}
               </select>
             </div>
-            <button className={styles.newBlogButton}>+ NEW BLOG</button>
+            <button className={styles.newBlogButton} onClick={openNewBlogModal}>
+              + NEW BLOG
+            </button>
           </li>
           <li>
             <button onClick={isSmallScreen ? handleSidebarItemClick : null}>
