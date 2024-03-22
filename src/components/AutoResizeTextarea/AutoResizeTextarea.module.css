@@ -1,4 +1,4 @@
-textarea {
+textarea.autoResizeTextarea {
   resize: none;
   overflow: hidden;
   border: none;

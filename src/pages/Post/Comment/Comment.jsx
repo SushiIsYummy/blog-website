@@ -32,25 +32,22 @@ function Comment({
   const commentCreationDate = toRelativeTimeLuxon(commentData.created_at);
   const commentUserId = commentData.author._id;
   const postId = commentData.post;
+  const blogId = commentData.blog;
   const commentId = commentData._id;
   const commentLines = commentContent.split('\n');
   const isParent = commentData.parent === null;
   const commentRepliesCount = commentData.replies;
   const userReplyTextArea = useRef(null);
 
-  // const [nextRepliesPage, setNextRepliesPage] = useState(1);
-
   const isFirstRender = useRef(true);
   const [currentVote, setCurrentVote] = useState(commentData.user_vote || 0);
   const [upvotes, setUpvotes] = useState(commentData.upvotes);
   const [downvotes, setDownvotes] = useState(commentData.downvotes);
-  const isFirstRepliesOpen = useRef(true);
 
   const [repliesIsOpen, setRepliesIsOpen] = useState(false);
   const [localReplies, setLocalReplies] = useState([]);
   const [localNewReplies, setLocalNewReplies] = useState([]);
   const [userReplyOpen, setUserReplyOpen] = useState(false);
-  const [loadingReplies, setLoadingReplies] = useState(false);
   const [userCommentReplyLoading, setUserCommentReplyLoading] = useState(false);
 
   useEffect(() => {
@@ -110,6 +107,7 @@ function Comment({
       const createdComment = await PostAPI.createCommentOnPost(postId, {
         content: comment,
         parent: parentId || commentId,
+        blog: blogId,
       });
       if (!isParent) {
         setParentReplies([...parentReplies, createdComment.data.postComment]);

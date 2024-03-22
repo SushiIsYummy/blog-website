@@ -4,13 +4,18 @@
 }
 
 #root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  /* height: 100vh; */
+  /* min-height: 100vh; */
+  /* display: flex; */
+  /* flex-direction: column; */
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+textarea {
+  font-family: Arial, sans-serif;
 }

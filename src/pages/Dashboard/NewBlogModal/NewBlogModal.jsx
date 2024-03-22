@@ -3,7 +3,14 @@ import Modal from '../../../components/Modal/Modal';
 import { useEffect, useState } from 'react';
 import BlogAPI from '../../../api/BlogAPI';
 
-function NewBlogModal({ isOpen, closeModal, onClose, onCancel, onSubmit }) {
+function NewBlogModal({
+  isOpen,
+  closeModal,
+  onClose,
+  onCancel,
+  onSubmit,
+  onNewBlogAdded,
+}) {
   const [blogName, setBlogName] = useState('');
   const [blogNameError, setBlogNameError] = useState(false);
   const [blogDescription, setBlogDescription] = useState('');
@@ -31,14 +38,14 @@ function NewBlogModal({ isOpen, closeModal, onClose, onCancel, onSubmit }) {
         title: blogName,
         description: blogDescription,
       });
-      closeModal();
+      await onNewBlogAdded(addedBlog.data.blog._id);
     } catch (err) {
       console.log(err);
     }
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={true}>
+    <Modal isOpen={isOpen} onClose={onClose} includeCloseIcon={false}>
       <div className={styles.newBlogModalContent}>
         <h2>Create New Blog</h2>
         <div className={styles.blogNameInputContainer}>
@@ -53,14 +60,16 @@ function NewBlogModal({ isOpen, closeModal, onClose, onCancel, onSubmit }) {
             <span className={styles.errorMsg}>Title must not be empty.</span>
           )}
         </div>
-        <input
-          type='text'
+        <textarea
           value={blogDescription}
           onChange={(e) => setBlogDescription(e.target.value)}
           placeholder='Blog description'
           className={styles.blogDescriptionInput}
         />
         <div className={styles.buttonsContainer}>
+          <button className={styles.cancelButton} onClick={closeModal}>
+            Cancel
+          </button>
           <button className={styles.addBlogButton} onClick={handleSubmit}>
             Add Blog
           </button>

@@ -145,6 +145,16 @@ a.blogLink:hover {
   gap: 10px;
 }
 
+.highlightedCommentTag {
+  padding: 3px 5px;
+  font-size: 0.8rem;
+  color: #1d1c1c;
+  background-color: rgb(199, 193, 193);
+  width: fit-content;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
 @media screen and (min-width: 460px) {
   .postBody {
     padding: 20px;

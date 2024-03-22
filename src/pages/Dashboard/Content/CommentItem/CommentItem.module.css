@@ -1,0 +1,121 @@
+.commentItem {
+  display: flex;
+  min-height: 70px;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgb(197, 189, 189);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.commentCoverImageContainer img {
+  display: flex;
+  justify-content: center;
+  background-color: #d4d4d4;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  /* object-fit: cover; */
+  /* aspect-ratio: 16 / 9; */
+  /* height: 60px; */
+  /* max-width: 100px; */
+  /* width: fit-content; */
+  overflow: hidden;
+}
+
+.commentDetails {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* padding: 10px; */
+}
+
+.topPart {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  font-size: 0.9rem;
+}
+
+.bottomPart {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3px;
+}
+
+.commentActivity {
+  flex: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.postTitle,
+.authorUsername {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.postTitle:link,
+.postTitle:visited,
+.authorUsername:link,
+.authorUsername:visited {
+  color: rgb(20, 163, 230);
+}
+
+.commentDate {
+  font-size: 0.95rem;
+}
+
+.commentContent {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  margin-top: 5px;
+}
+
+/* .title {
+  font-weight: bold;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} */
+
+.usernameAndProfilepic {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.profilePic {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.lastModifiedDate {
+  color: rgb(73, 73, 73);
+}
+
+.commentCount {
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (min-width: 481px) {
+  .topPart {
+    flex-direction: row;
+  }
+}

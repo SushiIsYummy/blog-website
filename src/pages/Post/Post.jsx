@@ -12,16 +12,39 @@ import UserComment from './UserComment/UserComment';
 import Comment from './Comment/Comment';
 import scrollToElementWithOffset from '../../utils/scrollToElementWithOffset';
 
-export async function loader({ params }) {
+export async function loader({ request, params }) {
   try {
+    const highlightedCommentIdQuery = new URL(request.url).searchParams.get(
+      'hc',
+    );
+    let highlightedComment = null;
+    if (highlightedCommentIdQuery) {
+      let targetComment = null;
+      try {
+        targetComment = await PostAPI.getSingleCommentOnPost(
+          params.postId,
+          highlightedCommentIdQuery,
+        );
+        highlightedComment = targetComment.data.comment;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     const [postResponse, postVotesResponse, commentsResponse] =
       await Promise.all([
         PostAPI.getPostById(params.postId),
         PostAPI.getVotesOnPost(params.postId),
         PostAPI.getCommentsOnPost(params.postId, { page: 1 }),
       ]);
-    return { postResponse, postVotesResponse, commentsResponse };
+    return {
+      postResponse,
+      postVotesResponse,
+      commentsResponse,
+      highlightedComment,
+    };
   } catch (err) {
+    console.log('outer try catch');
     console.error(err);
   }
   return null;
@@ -35,9 +58,17 @@ const voteOptions = {
 
 function Post() {
   const { headerRef } = useOutletContext();
-  let { postResponse, postVotesResponse, commentsResponse } = useLoaderData();
+  let {
+    postResponse,
+    postVotesResponse,
+    commentsResponse,
+    highlightedComment,
+  } = useLoaderData();
   const post = postResponse.data.post;
   const initialComments = commentsResponse.data.comments;
+  const initialCommentsWithoutHighlightedComment = initialComments.filter(
+    (comment) => highlightedComment && highlightedComment._id !== comment._id,
+  );
   const upvotesOnPost = postVotesResponse.data.upvotes;
   const downvotesOnPost = postVotesResponse.data.downvotes;
   const userVote = postVotesResponse.data.user_vote;
@@ -47,8 +78,11 @@ function Post() {
   const [currentVote, setCurrentVote] = useState(userVote);
   const [upvotes, setUpvotes] = useState(upvotesOnPost);
   const [downvotes, setDownvotes] = useState(downvotesOnPost);
-
-  const [comments, setComments] = useState(initialComments || []);
+  const [comments, setComments] = useState(
+    (highlightedComment
+      ? initialCommentsWithoutHighlightedComment
+      : initialComments) || [],
+  );
   const [userCommentLoading, setUserCommentLoading] = useState(false);
 
   useEffect(() => {
@@ -97,6 +131,7 @@ function Post() {
       setUserCommentLoading(true);
       const createdComment = await PostAPI.createCommentOnPost(post._id, {
         content: comment,
+        blog: post.blog._id,
       });
       setComments([createdComment.data.postComment, ...comments]);
     } catch (err) {
@@ -116,7 +151,7 @@ function Post() {
         className={styles.commentIcon}
         style={{ width: '20px', height: '20px' }}
       />
-      <p>{comments.length}</p>
+      <p>{initialComments.length}</p>
     </div>
   );
 
@@ -221,7 +256,7 @@ function Post() {
           <div ref={commentsSection} className={styles.commentSection}>
             <div className={styles.commentsHeader}>
               <h2 className={styles.commentsLabel}>
-                {comments.length} Comments
+                {initialComments.length} Comments
               </h2>
               <div className={styles.userComment}>
                 {!userCommentLoading ? (
@@ -247,6 +282,18 @@ function Post() {
               </div>
             </div>
             <div className={styles.comments}>
+              {highlightedComment ? (
+                <div className={styles.highlightedComment}>
+                  <p className={styles.highlightedCommentTag}>
+                    Highlighted Comment
+                  </p>
+                  <Comment
+                    key={highlightedComment._id}
+                    commentData={highlightedComment}
+                    highlightedComment={true}
+                  />
+                </div>
+              ) : null}
               {comments.map((comment) => {
                 return <Comment key={comment._id} commentData={comment} />;
               })}

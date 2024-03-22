@@ -1,61 +1,63 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import styles from './Modal.module.css';
 import PropTypes from 'prop-types';
 
-const Modal = ({
+function Modal({
   isOpen,
   onClose,
   children,
-  closeOnOverlayClick,
+  closeOnOverlayClick = false,
   className,
-}) => {
+  includeCloseIcon = true,
+}) {
   const showHideClassName = isOpen ? styles.open : '';
   const modalOverlayRef = useRef(null);
-
-  useEffect(() => {
-    function handleOverlayClick(e) {
-      if (e.target === modalOverlayRef.current) {
-        onClose();
-      }
-    }
-
-    if (closeOnOverlayClick) {
-      document.addEventListener('click', handleOverlayClick);
-    }
-
-    return () => {
-      if (closeOnOverlayClick) {
-        document.removeEventListener('click', handleOverlayClick);
-      }
-    };
-  }, [closeOnOverlayClick, isOpen, onClose]);
+  const overlayClicked = useRef(false);
 
   function handleClose() {
     onClose && onClose();
   }
 
+  function handleOverlayMouseDown(e) {
+    if (e.target === modalOverlayRef.current) {
+      overlayClicked.current = true;
+    }
+  }
+
+  function handleOverlayMouseUp(e) {
+    if (e.target === modalOverlayRef.current && overlayClicked.current) {
+      handleClose();
+    }
+    overlayClicked.current = false;
+  }
+
   return (
     <div
       ref={modalOverlayRef}
-      className={`${styles.modal} ${showHideClassName} ${className ?? ''}`}
+      className={`${styles.modalOverlay} ${showHideClassName} ${className ?? ''}`}
+      onMouseDown={closeOnOverlayClick ? handleOverlayMouseDown : undefined}
+      onMouseUp={closeOnOverlayClick ? handleOverlayMouseUp : undefined}
     >
       <div className={styles.modalContent}>
-        <div className={styles.closeButtonContainer}>
-          <button className={styles.closeButton} onClick={handleClose}>
-            &times;
-          </button>
-        </div>
+        {includeCloseIcon && (
+          <div className={styles.closeButtonContainer}>
+            <button className={styles.closeButton} onClick={handleClose}>
+              &times;
+            </button>
+          </div>
+        )}
         {children}
       </div>
     </div>
   );
-};
+}
 
 Modal.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
   children: PropTypes.node,
   closeOnOverlayClick: PropTypes.bool,
+  includeCloseIcon: PropTypes.bool,
 };
 
 export default Modal;

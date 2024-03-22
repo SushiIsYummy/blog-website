@@ -1,37 +1,21 @@
-/* .modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.modalContent {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px; // remove
-  width: 100%;
-  height: 100%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  overflow-y: auto;
-  z-index: 10;
-} */
-
 .newBlogModalContent {
   display: flex;
   flex-direction: column;
+  width: 300px;
+  max-width: 100%;
   gap: 10px;
-  margin-top: 10px;
+}
+
+.newBlogModalContent h2 {
+  text-align: center;
 }
 
 .buttonsContainer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 .blogNameInputContainer {
@@ -40,15 +24,33 @@
   gap: 3px;
 }
 
-.newBlogModalContent input {
+.blogNameInput {
   padding: 3px;
   font-size: 1rem;
   outline: none;
 }
 
+.blogDescriptionInput {
+  padding: 3px;
+  height: 6em;
+  font-size: 1rem;
+  resize: none;
+  outline: none;
+}
+
+.cancelButton {
+  padding: 7px 12px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  background-color: transparent;
+  color: gray;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .addBlogButton {
   padding: 7px 12px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: none;
   background-color: rgb(42, 165, 42);
   color: white;

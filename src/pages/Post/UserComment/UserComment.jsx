@@ -1,5 +1,5 @@
 import styles from './UserComment.module.css';
-import AutoResizeTextArea from '../../../components/AutoResizeTextArea/AutoResizeTextArea';
+import AutoResizeTextarea from '../../../components/AutoResizeTextarea/AutoResizeTextarea';
 import { useEffect, useRef, useState } from 'react';
 import _trimStart from 'lodash/trimStart';
 import PropTypes from 'prop-types';
@@ -68,7 +68,7 @@ function UserComment({
         style={{ width: profilePicSize, height: profilePicSize }}
       />
       <div className={styles.rightSide}>
-        <AutoResizeTextArea
+        <AutoResizeTextarea
           externalTextareaRef={textareaRef}
           content={userComment}
           allowLineBreak={true}

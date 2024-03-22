@@ -1,0 +1,67 @@
+.postItem {
+  display: flex;
+  height: 70px;
+  border: 1px solid rgb(197, 189, 189);
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.postCoverImageContainer {
+  display: flex;
+  justify-content: center;
+  background-color: #d4d4d4;
+  aspect-ratio: 16 / 9;
+  /* height: 60px; */
+  /* max-width: 100px; */
+  /* width: fit-content; */
+  overflow: hidden;
+}
+
+.postDetails {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 10px;
+  /* padding: 10px; */
+}
+
+.topPart,
+.bottomPart {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.title {
+  font-weight: bold;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.usernameAndProfilepic {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.profilePic {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.lastModifiedDate {
+  color: rgb(73, 73, 73);
+}
+
+.commentCount {
+  display: flex;
+  align-items: center;
+}

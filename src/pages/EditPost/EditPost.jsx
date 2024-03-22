@@ -8,7 +8,7 @@ import './EditPost.css';
 import { useContext } from 'react';
 import AuthContext from '../../context/AuthProvider';
 import EditPostModal from './EditPostModal/EditPostModal';
-import AutoResizeTextArea from '../../components/AutoResizeTextArea/AutoResizeTextArea';
+import AutoResizeTextarea from '../../components/AutoResizeTextarea/AutoResizeTextarea';
 import checkImageValidity from '../../utils/checkImageValidity';
 
 function EditPost() {
@@ -110,7 +110,7 @@ function EditPost() {
             Publish
           </button>
           <div className='title'>
-            <AutoResizeTextArea
+            <AutoResizeTextarea
               content={title}
               allowLineBreak={false}
               onTextChange={handleTitleChange}
@@ -123,7 +123,7 @@ function EditPost() {
             />
           </div>
           <div className='subheading'>
-            <AutoResizeTextArea
+            <AutoResizeTextarea
               content={subheading}
               allowLineBreak={false}
               onTextChange={handleSubheadingChange}

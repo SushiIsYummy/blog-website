@@ -74,8 +74,14 @@ const routesConfig = [
             element: <Register />,
           },
           {
-            path: 'dashboard',
+            path: 'dashboard/blog/:sidebarOption',
             element: <Dashboard />,
+            children: [
+              {
+                path: ':blogId',
+                element: <Dashboard />,
+              },
+            ],
           },
         ],
       },
