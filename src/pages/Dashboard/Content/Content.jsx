@@ -4,12 +4,14 @@ import CommentItem from './CommentItem/CommentItem';
 import PostAPI from '../../../api/PostAPI';
 import { useEffect, useRef, useState } from 'react';
 import { SIDEBAR_ITEMS } from '../sidebarItems';
+import { useNavigate } from 'react-router-dom';
 
 function Content({ selectedBlogId, selectedSidebarItem }) {
   const loadingContent = useRef(true);
   loadingContent.current = true;
   const [cache, setCache] = useState(new Map());
   const cacheKey = `${selectedBlogId}-${selectedSidebarItem}`;
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchAndSetContent(selectedBlogId, selectedSidebarItem) {
@@ -64,7 +66,17 @@ function Content({ selectedBlogId, selectedSidebarItem }) {
       return noItems ? (
         <p>No posts found in blog.</p>
       ) : (
-        items.map((post) => <PostItem key={post._id} postData={post} />)
+        items.map((post) => (
+          <PostItem
+            key={post._id}
+            postData={post}
+            onClick={() =>
+              navigate(
+                `/dashboard/blogs/${selectedBlogId}/posts/${post._id}/edit`,
+              )
+            }
+          />
+        ))
       );
     } else if (selectedSidebarItem === SIDEBAR_ITEMS.COMMENTS) {
       return noItems ? (

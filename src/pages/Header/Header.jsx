@@ -1,27 +1,45 @@
 import styles from './Header.module.css';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import AuthContext from '../../context/AuthProvider';
 import { useContext } from 'react';
 import UserMenu from '../../components/Dropdown/UserMenu';
 import { useDashboardSidebar } from '../../context/DashboardSidebarContext';
 import { GiHamburgerMenu } from 'react-icons/gi';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 
 function Header({ headerRef }) {
   const { user } = useContext(AuthContext);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { blogId } = useParams();
   const { toggleDashboardSidebar } = useDashboardSidebar();
   const onDashboardPage = location.pathname.startsWith('/dashboard');
+  const onEditPostPage = location.pathname.match(
+    /^\/dashboard\/blogs\/([^/]+)\/posts\/([^/]+)\/edit$/,
+  );
+
+  function handleBackArrowClick() {
+    if (blogId) {
+      navigate(`/dashboard/blogs/${blogId}/posts`);
+    }
+  }
 
   return (
     <header ref={headerRef} className={styles.header}>
       <nav className={styles.headerNav}>
         <div className={styles.leftSide}>
-          {onDashboardPage ? (
+          {onDashboardPage && !onEditPostPage ? (
             <GiHamburgerMenu
               className={styles.hamburgerMenu}
               onClick={toggleDashboardSidebar}
-            ></GiHamburgerMenu>
+            />
           ) : null}
+          {onEditPostPage && (
+            <IoMdArrowRoundBack
+              className={styles.backArrow}
+              onClick={handleBackArrowClick}
+            />
+          )}
           <NavLink to={'/'}>
             <h1 className={styles.logo}>CoolBlog</h1>
           </NavLink>
@@ -34,15 +52,15 @@ function Header({ headerRef }) {
           )}
           {user?.role === 'user' && (
             <>
-              <NavLink to={'/new-post'} className={styles.writeButton}>
+              {/* <NavLink to={'/new-post'} className={styles.writeButton}>
                 Write
-              </NavLink>
+              </NavLink> */}
               <UserMenu
                 userProfilePic={
                   user.profile_photo ?? '/images/default_profile_photo.jpg'
                 }
                 userUsername={user?.username}
-              ></UserMenu>
+              />
             </>
           )}
         </div>

@@ -1,13 +1,11 @@
 import styles from './DashboardSidebar.module.css';
-import { useContext, useEffect, useRef, useState } from 'react';
-import AuthContext from '../../../context/AuthProvider';
-import BlogAPI from '../../../api/BlogAPI';
+import { useEffect, useRef, useState } from 'react';
 import { useDashboardSidebar } from '../../../context/DashboardSidebarContext';
 import { useMediaQuery } from '@react-hook/media-query';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { SIDEBAR_ITEMS_ARRAY } from '../sidebarItems';
-import { capitalize } from 'lodash';
 import getHeaderHeight from '../../../getHeaderHeight';
+import PostAPI from '../../../api/PostAPI';
 
 function DashboardSidebar({
   openNewBlogModal,
@@ -23,6 +21,32 @@ function DashboardSidebar({
   const sidebarRef = useRef(null);
   const navigate = useNavigate();
   const { blogId } = useParams();
+  const [sidebarItemLinks, setSidebarItemLinks] = useState([]);
+
+  useEffect(() => {
+    function getSidebarItemLink(routeParam) {
+      let link = '';
+      const blogIds = blogs.map((blog) => blog._id);
+
+      if (blogIds.includes(blogId)) {
+        link = `/dashboard/blogs/${blogId}/${routeParam}`;
+      } else if (blogIds.length > 0) {
+        const firstBlogId = blogIds[0];
+        link = `/dashboard/blogs/${firstBlogId}/${routeParam}`;
+      }
+
+      return link;
+    }
+
+    const links = [];
+
+    SIDEBAR_ITEMS_ARRAY.forEach((item) => {
+      const link = getSidebarItemLink(item.routeParam);
+      links.push(link);
+    });
+
+    setSidebarItemLinks(links);
+  }, [blogId, blogs]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -42,31 +66,22 @@ function DashboardSidebar({
     };
   }, [closeDashboardSidebar, dashboardSidebarIsOpen, isSmallScreen]);
 
-  function handleSidebarItemClick(itemName) {
-    setSelectedSidebarItem(itemName);
-    if (isSmallScreen) {
-      closeDashboardSidebar();
-    }
-    const blogIds = blogs.map((blog) => blog._id);
-    if (blogIds.includes(blogId)) {
-      navigate(`/dashboard/blog/${itemName.toLowerCase()}/${blogId}`);
-    } else if (blogIds.length > 0) {
-      const firstBlogId = blogIds[0];
-      setSelectedBlogId(firstBlogId);
-      navigate(`/dashboard/blog/${itemName.toLowerCase()}/${firstBlogId}`, {
-        replace: true,
-      });
-    } else {
-      navigate(`/dashboard/blog/${itemName.toLowerCase()}`);
-    }
-  }
-
   function handleBlogSelectChange(e) {
     setSelectedBlogId(e.target.value);
     if (isSmallScreen) {
       closeDashboardSidebar();
     }
-    navigate(`/dashboard/blog/${selectedSidebarItem}/${e.target.value}`);
+    navigate(`/dashboard/blogs/${e.target.value}/${selectedSidebarItem}`);
+  }
+
+  async function handleNewPostClick() {
+    try {
+      const response = await PostAPI.createPost(selectedBlogId);
+      const postId = response.data.post._id;
+      navigate(`/dashboard/blogs/${selectedBlogId}/posts/${postId}/edit`);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const headerHeight = getHeaderHeight();
@@ -103,34 +118,36 @@ function DashboardSidebar({
               + NEW BLOG
             </button>
           </li>
-          {SIDEBAR_ITEMS_ARRAY.map((item) => {
-            return (
-              <li key={item}>
+          {blogs.length > 0 && (
+            <>
+              <li className={styles.sideBarItemNewPost}>
                 <button
-                  className={`${styles.sidebarItem} ${selectedSidebarItem === item ? styles.selected : ''}`}
-                  onClick={() => handleSidebarItemClick(item)}
+                  className={styles.newPostButton}
+                  onClick={handleNewPostClick}
                 >
-                  {capitalize(item)}
+                  + NEW POST
                 </button>
               </li>
-            );
-          })}
-          {/* <li>
-            <button
-              className={styles.sideBarItem}
-              onClick={isSmallScreen ? handleSidebarItemClick : null}
-            >
-              Posts
-            </button>
-          </li>
-          <li>
-            <button
-              className={styles.sideBarItem}
-              onClick={isSmallScreen ? handleSidebarItemClick : null}
-            >
-              Comments
-            </button>
-          </li> */}
+              {SIDEBAR_ITEMS_ARRAY.map((item, index) => {
+                return (
+                  <li className={styles.sidebarItemLink} key={item.name}>
+                    <NavLink
+                      to={sidebarItemLinks[index]}
+                      className={`${styles.sidebarItem} ${selectedSidebarItem === item.routeParam ? styles.selected : ''}`}
+                      onClick={() => {
+                        setSelectedSidebarItem(item.routeParam);
+                        if (isSmallScreen) {
+                          closeDashboardSidebar();
+                        }
+                      }}
+                    >
+                      {item.name}
+                    </NavLink>
+                  </li>
+                );
+              })}
+            </>
+          )}
         </ul>
       </nav>
     </aside>

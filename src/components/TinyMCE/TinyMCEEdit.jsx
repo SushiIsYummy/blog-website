@@ -1,9 +1,10 @@
 import { Editor } from '@tinymce/tinymce-react';
 
-function TinyMCEEdit({ initialValue, onChange }) {
+function TinyMCEEdit({ onInit, initialValue, onChange, contentStyle = {} }) {
   return (
     <div id='tinymce-editor'>
       <Editor
+        onInit={onInit}
         apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
         init={{
           selector: 'textarea',
@@ -28,6 +29,8 @@ function TinyMCEEdit({ initialValue, onChange }) {
           object_resizing: false,
           // resize: 'vertical',
           content_css: '/src/components/TinyMCE/tinymce-styles-edit.css',
+          // content_style: 'body { height: 300px; overflow-y: hidden; }',
+          content_style: contentStyle,
         }}
         value={initialValue}
         onEditorChange={onChange}

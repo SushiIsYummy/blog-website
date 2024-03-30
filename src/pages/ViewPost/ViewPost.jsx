@@ -1,5 +1,5 @@
 import { useLoaderData, NavLink, useOutletContext } from 'react-router-dom';
-import styles from './Post.module.css';
+import styles from './ViewPost.module.css';
 import PostAPI from '../../api/PostAPI';
 import TinyMCEView from '../../components/TinyMCE/TinyMCEView';
 import toRelativeTimeLuxon from '../../utils/toRelativeTimeLuxon';
@@ -44,7 +44,6 @@ export async function loader({ request, params }) {
       highlightedComment,
     };
   } catch (err) {
-    console.log('outer try catch');
     console.error(err);
   }
   return null;
@@ -56,7 +55,7 @@ const voteOptions = {
   DOWNVOTE: -1,
 };
 
-function Post() {
+function ViewPost() {
   const { headerRef } = useOutletContext();
   let {
     postResponse,
@@ -305,4 +304,4 @@ function Post() {
   );
 }
 
-export default Post;
+export default ViewPost;

@@ -14,10 +14,14 @@ function Dashboard() {
   const [showNewBlogModal, setShowNewBlogModal] = useState(false);
   const [blogs, setBlogs] = useState(null);
 
-  const { blogId: blogIdParam, sidebarOption: sidebarOptionParam } =
-    useParams();
-  const validSidebarOption = SIDEBAR_ITEMS_ARRAY.includes(sidebarOptionParam);
-
+  const {
+    blogId: blogIdParam,
+    sidebarOption: sidebarOptionParam,
+    postId: postIdParam,
+  } = useParams();
+  const validSidebarOption = SIDEBAR_ITEMS_ARRAY.map(
+    (item) => item.routeParam,
+  ).includes(sidebarOptionParam);
   const [selectedBlogId, setSelectedBlogId] = useState(null);
   const [selectedSidebarItem, setSelectedSidebarItem] = useState(
     (validSidebarOption && sidebarOptionParam) || SIDEBAR_ITEMS.POSTS,
@@ -25,11 +29,15 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSelectedBlogId(blogIdParam);
+    if (blogIdParam) {
+      setSelectedBlogId(blogIdParam);
+    }
   }, [blogIdParam]);
 
   useEffect(() => {
-    setSelectedSidebarItem(sidebarOptionParam);
+    if (sidebarOptionParam) {
+      setSelectedSidebarItem(sidebarOptionParam);
+    }
   }, [sidebarOptionParam]);
 
   useEffect(() => {
@@ -40,23 +48,34 @@ function Dashboard() {
 
   useEffect(() => {
     if (blogs) {
-      const firstBlog = blogs.length > 0 ? blogs[0] : null;
-      const blogIds = blogs.map((blog) => blog._id);
-      if (!selectedBlogId || !blogIds.includes(selectedBlogId)) {
-        if (firstBlog) {
-          setSelectedBlogId(firstBlog._id);
-          navigate(`/dashboard/blog/${sidebarOptionParam}/${firstBlog._id}`, {
-            replace: true,
-          });
-        } else {
-          setSelectedBlogId('none');
-          navigate(`/dashboard/blog/${sidebarOptionParam}`, {
-            replace: true,
-          });
+      if (blogs.length > 0) {
+        const firstBlog = blogs[0];
+        const blogIds = blogs.map((blog) => blog._id);
+        if (!selectedBlogId || !blogIds.includes(selectedBlogId)) {
+          if (firstBlog) {
+            setSelectedBlogId(firstBlog._id);
+            navigate(
+              `/dashboard/blogs/${firstBlog._id}/${selectedSidebarItem}`,
+              {
+                replace: true,
+              },
+            );
+          }
         }
+      } else if (blogs.length === 0) {
+        setSelectedBlogId('none');
+        // navigate(`/dashboard/blogs/${sidebarOptionParam}`, {
+        //   replace: true,
+        // });
       }
     }
-  }, [blogs, selectedBlogId, sidebarOptionParam, navigate]);
+  }, [
+    blogs,
+    selectedBlogId,
+    sidebarOptionParam,
+    navigate,
+    selectedSidebarItem,
+  ]);
 
   function openNewBlogModal() {
     setShowNewBlogModal(true);
@@ -71,44 +90,45 @@ function Dashboard() {
     setSelectedBlogId(newBlogId);
     setBlogs(updatedBlogs);
     setSelectedSidebarItem(SIDEBAR_ITEMS.POSTS);
-    navigate(`/dashboard/blog/posts/${newBlogId}`);
+    navigate(`/dashboard/blogs/${newBlogId}/posts`);
     closeNewBlogModal();
   }
 
   const headerHeight = getHeaderHeight();
 
   return (
-    <div className={styles.dashboard}>
-      {blogs !== null && (
-        <DashboardSidebar
-          openNewBlogModal={openNewBlogModal}
-          blogs={blogs || []}
-          selectedBlogId={selectedBlogId}
-          setSelectedBlogId={setSelectedBlogId}
-          selectedSidebarItem={selectedSidebarItem}
-          setSelectedSidebarItem={setSelectedSidebarItem}
-        />
-      )}
-      <div
-        className={styles.contentContainer}
-        style={
-          headerHeight ? { height: `calc(100vh - ${headerHeight}px)` } : {}
-        }
-      >
-        {validSidebarOption && selectedBlogId && (
-          <Content
+    <>
+      <div className={styles.dashboard}>
+        {blogs !== null && (
+          <DashboardSidebar
+            openNewBlogModal={openNewBlogModal}
+            blogs={blogs}
             selectedBlogId={selectedBlogId}
+            setSelectedBlogId={setSelectedBlogId}
             selectedSidebarItem={selectedSidebarItem}
+            setSelectedSidebarItem={setSelectedSidebarItem}
           />
         )}
+        <div
+          className={styles.contentContainer}
+          style={
+            headerHeight ? { height: `calc(100vh - ${headerHeight}px)` } : {}
+          }
+        >
+          {validSidebarOption && selectedBlogId && (
+            <Content
+              selectedBlogId={selectedBlogId}
+              selectedSidebarItem={selectedSidebarItem}
+            />
+          )}
+        </div>
+        <NewBlogModal
+          isOpen={showNewBlogModal}
+          onClose={closeNewBlogModal}
+          onNewBlogAdded={handleNewBlogAdded}
+        />
       </div>
-      <NewBlogModal
-        isOpen={showNewBlogModal}
-        closeModal={closeNewBlogModal}
-        onClose={closeNewBlogModal}
-        onNewBlogAdded={handleNewBlogAdded}
-      />
-    </div>
+    </>
   );
 }
 

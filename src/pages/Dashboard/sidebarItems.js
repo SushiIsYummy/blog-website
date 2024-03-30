@@ -3,4 +3,13 @@ export const SIDEBAR_ITEMS = {
   COMMENTS: 'comments',
 };
 
-export const SIDEBAR_ITEMS_ARRAY = ['posts', 'comments'];
+export const SIDEBAR_ITEMS_ARRAY = [
+  {
+    name: 'Posts',
+    routeParam: 'posts',
+  },
+  {
+    name: 'Comments',
+    routeParam: 'comments',
+  },
+];

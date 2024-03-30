@@ -3,20 +3,14 @@ import Modal from '../../../components/Modal/Modal';
 import { useEffect, useState } from 'react';
 import BlogAPI from '../../../api/BlogAPI';
 
-function NewBlogModal({
-  isOpen,
-  closeModal,
-  onClose,
-  onCancel,
-  onSubmit,
-  onNewBlogAdded,
-}) {
+function NewBlogModal({ isOpen, onClose, onSubmit, onNewBlogAdded }) {
   const [blogName, setBlogName] = useState('');
   const [blogNameError, setBlogNameError] = useState(false);
   const [blogDescription, setBlogDescription] = useState('');
+  const [errorCreatingBlog, setErrorCreatingBlog] = useState(false);
+  const [creatingBlog, setCreatingBlog] = useState(false);
 
-  useEffect(() => {}, [isOpen]);
-
+  // remove title error while typing
   useEffect(() => {
     if (blogNameError && blogName !== '') {
       setBlogNameError(false);
@@ -24,6 +18,7 @@ function NewBlogModal({
   }, [blogName, blogNameError]);
 
   function handleSubmit() {
+    setErrorCreatingBlog(false);
     if (blogName === '') {
       setBlogNameError(true);
       return;
@@ -32,16 +27,31 @@ function NewBlogModal({
     onSubmit && onSubmit();
   }
 
+  function handleCancel() {
+    onClose && onClose();
+    clearInputs();
+  }
+
   async function createBlog() {
     try {
+      setCreatingBlog(true);
       const addedBlog = await BlogAPI.createBlog({
         title: blogName,
         description: blogDescription,
       });
       await onNewBlogAdded(addedBlog.data.blog._id);
+      clearInputs();
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      setErrorCreatingBlog(true);
+    } finally {
+      setCreatingBlog(false);
     }
+  }
+
+  function clearInputs() {
+    setBlogName('');
+    setBlogDescription('');
   }
 
   return (
@@ -66,11 +76,20 @@ function NewBlogModal({
           placeholder='Blog description'
           className={styles.blogDescriptionInput}
         />
+        {errorCreatingBlog && !creatingBlog && (
+          <p className={styles.errorMsg}>
+            An error occured while creating blog. Please try again.
+          </p>
+        )}
+        {creatingBlog && <p>Creating blog...</p>}
         <div className={styles.buttonsContainer}>
-          <button className={styles.cancelButton} onClick={closeModal}>
+          <button className={styles.cancelButton} onClick={handleCancel}>
             Cancel
           </button>
-          <button className={styles.addBlogButton} onClick={handleSubmit}>
+          <button
+            className={styles.addBlogButton}
+            onClick={!creatingBlog ? handleSubmit : undefined}
+          >
             Add Blog
           </button>
         </div>

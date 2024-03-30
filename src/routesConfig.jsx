@@ -4,9 +4,9 @@ import UserProfile, {
   loader as userProfileLoader,
 } from './pages/UserProfile/UserProfile';
 import Home, { loader as HomeLoader } from './pages/Home/Home';
-import Post, { loader as postLoader } from './pages/Post/Post';
+import ViewPost, { loader as postLoader } from './pages/ViewPost/ViewPost';
 import Blog, { loader as blogLoader } from './pages/Blog/Blog';
-import EditPost from './pages/EditPost/EditPost';
+import EditPost, { loader as editPostLoader } from './pages/EditPost/EditPost';
 import SignIn from './pages/SignIn/SignIn';
 import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -58,12 +58,13 @@ const routesConfig = [
           },
           {
             path: 'posts/:postId',
-            element: <Post />,
+            element: <ViewPost />,
             loader: postLoader,
           },
           {
-            path: 'new-post',
-            element: <EditPost />,
+            // path: 'new-post',
+            // element: <EditPost />,
+            // loader: editPostLoader,
           },
           {
             path: 'sign-in',
@@ -74,13 +75,25 @@ const routesConfig = [
             element: <Register />,
           },
           {
-            path: 'dashboard/blog/:sidebarOption',
-            element: <Dashboard />,
+            path: 'dashboard',
             children: [
               {
-                path: ':blogId',
+                index: true,
                 element: <Dashboard />,
               },
+              {
+                path: 'blogs/:blogId/:sidebarOption',
+                element: <Dashboard />,
+              },
+              {
+                path: 'blogs/:blogId/posts/:postId/edit',
+                element: <EditPost />,
+                loader: editPostLoader,
+              },
+              // {
+              //   path: 'blogs/:blogId/posts',
+              //   element: <Dashboard />,
+              // },
             ],
           },
         ],

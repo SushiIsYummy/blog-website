@@ -9,7 +9,10 @@ function UserMenu({ userProfilePic, userUsername }) {
   const navigate = useNavigate();
   const { user, signOut } = useContext(AuthContext);
   const location = useLocation();
-
+  const onDashboardPage = location.pathname.startsWith('/dashboard');
+  const onEditPostPage = location.pathname.match(
+    /^\/dashboard\/blogs\/([^/]+)\/posts\/([^/]+)\/edit$/,
+  );
   const signOutAndNavigateHome = async () => {
     await signOut();
     navigate('/');
@@ -27,10 +30,10 @@ function UserMenu({ userProfilePic, userUsername }) {
         </Dropdown.Item>
         <Dropdown.Item
           onClick={() => {
-            if (location.pathname.startsWith('/dashboard')) {
+            if (onDashboardPage && !onEditPostPage) {
               // navigate(0);
             } else {
-              navigate(`/dashboard/blog/posts`);
+              navigate(`/dashboard`);
             }
           }}
         >
