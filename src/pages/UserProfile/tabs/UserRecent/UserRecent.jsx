@@ -44,6 +44,7 @@ function UserRecent({ posts, setPosts }) {
       <div className={styles.posts}>
         {posts &&
           posts.map((post) => {
+            const postTitle = post.title === '' ? '(Untitled)' : post.title;
             return (
               <div key={post._id} className={styles.post}>
                 <p className={styles.relativeTimeAndBlog}>
@@ -56,7 +57,7 @@ function UserRecent({ posts, setPosts }) {
                   </NavLink>
                 </p>
                 <NavLink to={`/posts/${post._id}`}>
-                  <p className={styles.postTitle}>{post.title}</p>
+                  <p className={styles.postTitle}>{postTitle}</p>
                   <p className={styles.postContent}>
                     {post.subheading
                       ? post.subheading

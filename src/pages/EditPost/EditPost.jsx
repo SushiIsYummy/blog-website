@@ -1,15 +1,14 @@
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useLoaderData, useParams } from 'react-router-dom';
 import styles from './EditPost.module.css';
-import BlogAPI from '../../api/BlogAPI';
 import PostAPI from '../../api/PostAPI';
 import TinyMCEEdit from '../../components/TinyMCE/TinyMCEEdit';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../../context/AuthProvider';
-import EditPostModal from './EditPostModal/EditPostModal';
 import AutoResizeTextarea from '../../components/AutoResizeTextarea/AutoResizeTextarea';
-import checkImageValidity from '../../utils/checkImageValidity';
 import useEffectAfterMount from '../../hooks/useEffectAfterMount';
+import OverflowMenu from './OverflowMenu/OverflowMenu';
+import PublishPostModal from './PublishPostModal/PublishPostModal';
 
 export async function loader({ params }) {
   try {
@@ -33,74 +32,30 @@ function EditPost() {
   const [content, setContent] = useState(
     postResponse?.data?.post?.content ?? '',
   );
-  const [modalOpen, setModalOpen] = useState(false);
-  const [coverImage, setCoverImage] = useState(null);
-  const [coverImageInput, setCoverImageInput] = useState('');
-  const [selectedBlogId, setSelectedBlogId] = useState(null);
-  const [userBlogs, setUserBlogs] = useState([]);
+  const [currentCoverImage, setCurrentCoverImage] = useState(
+    postResponse?.data?.post?.cover_image ?? null,
+  );
+
   const [savingPost, setSavingPost] = useState(false);
-  const [savedPost, setSavedPost] = useState(null);
+  const [postIsSaved, setPostIsSaved] = useState(null);
+  const [publishPostModalOpened, setPublishPostModalOpened] = useState(false);
+
+  const handlePublishPostModalClose = () => {
+    setPublishPostModalOpened(false);
+  };
 
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
   const { postId } = useParams();
-  console.log(postId);
-  const postIsPublished = postResponse?.data?.post?.published || false;
+  const [postIsPublished, setPostIsPublished] = useState(
+    postResponse?.data?.post?.published,
+  );
 
   const contentRef = useRef(null);
   const topPartRef = useRef(null);
 
-  // TODO: do not allow user to create a post without having at least one blog
-
   useEffectAfterMount(() => {
-    setSavedPost(false);
+    setPostIsSaved(false);
   }, [title, subheading, content]);
-
-  useEffect(() => {
-    async function getUserBlogs() {
-      try {
-        const blogsResponse = await BlogAPI.getBlogsByUser(user.userId);
-        setUserBlogs(blogsResponse.data.blogs);
-        setSelectedBlogId(blogsResponse.data.blogs[0]._id);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    if (user.userId) {
-      getUserBlogs();
-    }
-  }, [user]);
-
-  const handleImageUpload = async (imageUrl) => {
-    const isValidImage = await checkImageValidity(imageUrl);
-    if (isValidImage) {
-      setCoverImage(imageUrl);
-    } else {
-      setCoverImage(null);
-    }
-  };
-
-  // below function is for uploading local files
-  // const handleImageUpload = (event) => {
-  //   const selectedImage = event.target.files[0];
-
-  //   if (selectedImage) {
-  //     const reader = new FileReader();
-
-  //     reader.onload = function (event) {
-  //       const imageData = event.target.result;
-  //       setCoverImageData(imageData);
-  //     };
-
-  //     reader.readAsDataURL(selectedImage);
-  //     setCoverImage(selectedImage);
-  //   }
-  // };
-
-  const handleOnClearButtonClick = () => {
-    setCoverImage(null);
-    setCoverImageInput('');
-  };
 
   const handleTitleChange = (newTitle) => {
     setTitle(newTitle);
@@ -112,24 +67,6 @@ function EditPost() {
     setContent(newContent);
   };
 
-  const publishPost = async () => {
-    try {
-      const response = await PostAPI.createPost(selectedBlogId, {
-        title,
-        subheading,
-        content,
-        published: true,
-        cover_image: coverImage,
-      });
-      const postId = response?.data?.post?._id;
-      if (postId) {
-        navigate(`/posts/${postId}`);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   async function updatePost() {
     try {
       setSavingPost(true);
@@ -138,7 +75,7 @@ function EditPost() {
         subheading,
         content,
       });
-      setSavedPost(true);
+      setPostIsSaved(true);
     } catch (err) {
       console.error(err);
     } finally {
@@ -156,12 +93,12 @@ function EditPost() {
         {savingPost ? (
           <p>Saving...</p>
         ) : (
-          savedPost !== null && <p>{savedPost ? 'Saved' : 'Unsaved'}</p>
+          postIsSaved !== null && <p>{postIsSaved ? 'Saved' : 'Unsaved'}</p>
         )}
         <button
           className={styles.updateButton}
           onClick={updatePost}
-          disabled={savedPost === null ? true : savedPost}
+          disabled={postIsSaved === null ? true : postIsSaved}
         >
           Update
         </button>
@@ -169,11 +106,15 @@ function EditPost() {
         {!postIsPublished && (
           <button
             className={styles.publishButton}
-            onClick={() => setModalOpen(true)}
+            onClick={() => setPublishPostModalOpened(true)}
           >
             Publish
           </button>
         )}
+        <OverflowMenu
+          currentCoverImage={currentCoverImage}
+          setCurrentCoverImage={setCurrentCoverImage}
+        />
       </div>
       <div className={styles.titleSubheadingContent}>
         <div className={styles.titleAndSubheading}>
@@ -208,18 +149,12 @@ function EditPost() {
           />
         </div>
       </div>
-      {modalOpen && (
-        <EditPostModal
-          setModalOpen={setModalOpen}
-          handleImageUpload={handleImageUpload}
-          handleOnClearButtonClick={handleOnClearButtonClick}
-          coverImage={coverImage}
-          selectedBlogId={selectedBlogId}
-          setSelectedBlogId={setSelectedBlogId}
-          userBlogs={userBlogs}
-          publishPost={publishPost}
-          coverImageInput={coverImageInput}
-          setCoverImageInput={setCoverImageInput}
+      {!postIsPublished && (
+        <PublishPostModal
+          opened={publishPostModalOpened}
+          onClose={handlePublishPostModalClose}
+          postIsSaved={postIsSaved}
+          setPostIsPublished={setPostIsPublished}
         />
       )}
     </div>

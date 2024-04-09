@@ -1,0 +1,19 @@
+.threeDotsButton {
+  padding: 3px;
+  border-radius: 50%;
+  background-color: transparent;
+  color: black;
+  /* line-height: 1; */
+  height: 24px;
+  width: 24px;
+  /* align-self: center; */
+}
+
+.threeDotsButton:hover {
+  background-color: rgba(61, 61, 61, 0.1);
+  color: black;
+}
+
+.threeDotsSVG {
+  display: inline-block;
+}

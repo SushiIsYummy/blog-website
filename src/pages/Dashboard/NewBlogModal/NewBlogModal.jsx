@@ -2,6 +2,7 @@ import styles from './NewBlogModal.module.css';
 import Modal from '../../../components/Modal/Modal';
 import { useEffect, useState } from 'react';
 import BlogAPI from '../../../api/BlogAPI';
+import { notifications } from '@mantine/notifications';
 
 function NewBlogModal({ isOpen, onClose, onSubmit, onNewBlogAdded }) {
   const [blogName, setBlogName] = useState('');
@@ -33,17 +34,33 @@ function NewBlogModal({ isOpen, onClose, onSubmit, onNewBlogAdded }) {
   }
 
   async function createBlog() {
+    const blogCreationNotificationId = 'blog-creation-notification';
     try {
       setCreatingBlog(true);
+      notifications.show({
+        id: blogCreationNotificationId,
+        message: 'Processing...',
+        autoClose: false,
+      });
       const addedBlog = await BlogAPI.createBlog({
         title: blogName,
         description: blogDescription,
+      });
+      notifications.update({
+        id: blogCreationNotificationId,
+        message: 'Blog created successfully',
+        autoClose: 3000,
       });
       await onNewBlogAdded(addedBlog.data.blog._id);
       clearInputs();
     } catch (err) {
       console.error(err);
       setErrorCreatingBlog(true);
+      notifications.update({
+        id: blogCreationNotificationId,
+        message: 'Failed to create blog',
+        autoClose: 3000,
+      });
     } finally {
       setCreatingBlog(false);
     }

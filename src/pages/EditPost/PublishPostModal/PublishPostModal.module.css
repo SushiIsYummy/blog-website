@@ -1,0 +1,22 @@
+.publishPostModal {
+}
+
+.message {
+  padding: 4px 0 20px 0;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirmButton {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #0082c9;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}

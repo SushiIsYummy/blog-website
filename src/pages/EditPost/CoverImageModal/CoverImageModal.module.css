@@ -1,0 +1,78 @@
+.coverImageModal {
+}
+
+.editContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.selectCoverImage {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.selectCoverImage input {
+  width: 100%;
+  align-self: center;
+}
+
+.inputAndClearButton {
+  display: flex;
+  gap: 10px;
+}
+
+.invalidImageMsg {
+  color: red;
+}
+
+.clearInputButton {
+  align-self: flex-end;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.imageContainer {
+  background-color: #d4d4d4;
+  width: 700px;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+}
+
+.imageContainer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.updateButtonContainer {
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  gap: 10px;
+}
+
+.updateButton {
+  align-self: flex-end;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #0082c9;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.updatedCoverMsg {
+}
