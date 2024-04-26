@@ -1,9 +1,8 @@
 import { Form, NavLink } from 'react-router-dom';
 import styles from './Register.module.css';
-import AuthAPI from '../../api/AuthAPI';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import AuthContext from '../../context/AuthProvider';
-import { useLocation, useNavigate, Navigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import UserAPI from '../../api/UserAPI';
 import underscoreToCamelCase from '../../utils/underscoreToCamelCase';
 
@@ -47,15 +46,13 @@ function Register() {
       }
     } catch (err) {
       const newErrors = {};
-      const errMessageParsed = JSON.parse(err.message ?? null);
-      let responseErrors = errMessageParsed.data?.errors;
+      let responseErrors = err?.data?.errors;
       if (responseErrors) {
         responseErrors.map((error) => {
           newErrors[`${underscoreToCamelCase(error.path)}`] = error.msg;
         });
         setErrors(newErrors);
       }
-      console.error(err.message);
     }
   };
 

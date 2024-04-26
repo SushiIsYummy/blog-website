@@ -4,7 +4,7 @@ import styles from './CommentItem.module.css';
 // import BlogAPI from '../../../api/BlogAPI';
 import AuthContext from '../../../../context/AuthProvider';
 import { useContext } from 'react';
-import formatUTCDate from '../../../../utils/formatUTCDate';
+import formatUTCDateToLocal from '../../../../utils/formatUTCDateToLocal';
 import { NavLink } from 'react-router-dom';
 
 function CommentItem({ commentData }) {
@@ -16,7 +16,10 @@ function CommentItem({ commentData }) {
   const postId = commentData.post._id;
   const commentId = commentData._id;
   const postTitle = commentData.post.title;
-  const commentDate = formatUTCDate(commentData.created_at, 'MMM d, yyyy');
+  const commentDate = formatUTCDateToLocal(
+    commentData.created_at,
+    'MMM d, yyyy',
+  );
   const commentContent = commentData.content;
 
   return (

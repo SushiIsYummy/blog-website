@@ -70,7 +70,7 @@ function EditPost() {
   async function updatePost() {
     try {
       setSavingPost(true);
-      const updatedPost = await PostAPI.updatePost(postId, {
+      const updatedPost = await PostAPI.updatePostContent(postId, {
         title,
         subheading,
         content,

@@ -79,6 +79,9 @@ function DashboardSidebar({
       const response = await PostAPI.createPost(selectedBlogId);
       const postId = response.data.post._id;
       navigate(`/dashboard/blogs/${selectedBlogId}/posts/${postId}/edit`);
+      if (isSmallScreen) {
+        closeDashboardSidebar();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -99,7 +102,7 @@ function DashboardSidebar({
               <p>Current selected blog:</p>
               {blogs.length > 0 ? (
                 <select
-                  value={selectedBlogId}
+                  value={selectedBlogId || ''}
                   onChange={handleBlogSelectChange}
                 >
                   {blogs.map((blog) => {

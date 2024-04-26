@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
-import axios from '../api/config/axiosConfig';
+import AuthAPI from '../api/AuthAPI';
 
-const AuthContext = createContext({});
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -15,42 +15,22 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const checkAuthenticationStatus = async () => {
-    try {
-      let response = await axios.get('/auth/status');
-      response = response.data;
-      const role = response?.data?.user?.role;
-      setIsLoggedIn(role === 'guest' ? false : true);
-      setUser(response.data.user);
-    } catch (error) {
-      console.log(error);
-      throw new Error(JSON.stringify(error.response.data));
-    }
+    let response = await AuthAPI.checkStatus();
+    const role = response?.data?.user?.role;
+    setIsLoggedIn(role === 'guest' ? false : true);
+    setUser(response.data.user);
   };
 
   const signIn = async (username, password) => {
-    try {
-      let response = await axios.post('/auth/login', { username, password });
-      response = response.data;
-      console.log(response);
-      setIsLoggedIn(true);
-      setUser(response?.data?.user);
-    } catch (error) {
-      console.log(error);
-      throw new Error(JSON.stringify(error.response.data));
-    }
+    let response = await AuthAPI.signIn({ username, password });
+    setIsLoggedIn(true);
+    setUser(response?.data?.user);
   };
 
   const signOut = async () => {
-    try {
-      let response = await axios.post('/auth/logout');
-      response = response.data;
-      console.log(response);
-      setIsLoggedIn(false);
-      setUser({ role: 'guest' });
-    } catch (error) {
-      console.log(error);
-      throw new Error(JSON.stringify(error.response.data));
-    }
+    let response = await AuthAPI.signOut();
+    setIsLoggedIn(false);
+    setUser({ role: 'guest' });
   };
 
   return (

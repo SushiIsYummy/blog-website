@@ -4,7 +4,10 @@ import UserProfile, {
   loader as userProfileLoader,
 } from './pages/UserProfile/UserProfile';
 import Home, { loader as HomeLoader } from './pages/Home/Home';
-import ViewPost, { loader as postLoader } from './pages/ViewPost/ViewPost';
+import ViewPost, {
+  loader as postLoader,
+  previewLoader,
+} from './pages/ViewPost/ViewPost';
 import Blog, { loader as blogLoader } from './pages/Blog/Blog';
 import EditPost, { loader as editPostLoader } from './pages/EditPost/EditPost';
 import SignIn from './pages/SignIn/SignIn';
@@ -62,11 +65,6 @@ const routesConfig = [
             loader: postLoader,
           },
           {
-            // path: 'new-post',
-            // element: <EditPost />,
-            // loader: editPostLoader,
-          },
-          {
             path: 'sign-in',
             element: <SignIn />,
           },
@@ -79,21 +77,22 @@ const routesConfig = [
             children: [
               {
                 index: true,
-                element: <Dashboard />,
+                element: <Dashboard key='loading_data' />,
               },
               {
                 path: 'blogs/:blogId/:sidebarOption',
-                element: <Dashboard />,
+                element: <Dashboard key='loaded_data' />,
               },
               {
                 path: 'blogs/:blogId/posts/:postId/edit',
                 element: <EditPost />,
                 loader: editPostLoader,
               },
-              // {
-              //   path: 'blogs/:blogId/posts',
-              //   element: <Dashboard />,
-              // },
+              {
+                path: 'blogs/:blogId/posts/:postId/preview',
+                element: <ViewPost isPreview={true} />,
+                loader: previewLoader,
+              },
             ],
           },
         ],

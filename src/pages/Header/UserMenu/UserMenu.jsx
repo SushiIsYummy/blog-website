@@ -1,18 +1,13 @@
 'use client';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './UserMenu.module.css';
 import { Avatar, Dropdown } from 'flowbite-react';
 import { useContext } from 'react';
-import AuthContext from '../../context/AuthProvider';
+import AuthContext from '../../../context/AuthProvider';
 
 function UserMenu({ userProfilePic, userUsername }) {
   const navigate = useNavigate();
   const { user, signOut } = useContext(AuthContext);
-  const location = useLocation();
-  const onDashboardPage = location.pathname.startsWith('/dashboard');
-  const onEditPostPage = location.pathname.match(
-    /^\/dashboard\/blogs\/([^/]+)\/posts\/([^/]+)\/edit$/,
-  );
   const signOutAndNavigateHome = async () => {
     await signOut();
     navigate('/');
@@ -28,15 +23,7 @@ function UserMenu({ userProfilePic, userUsername }) {
         <Dropdown.Item onClick={() => navigate(`/users/${user.userId}`)}>
           Profile
         </Dropdown.Item>
-        <Dropdown.Item
-          onClick={() => {
-            if (onDashboardPage && !onEditPostPage) {
-              // navigate(0);
-            } else {
-              navigate(`/dashboard`);
-            }
-          }}
-        >
+        <Dropdown.Item onClick={() => navigate('/dashboard')}>
           Dashboard
         </Dropdown.Item>
         <div className={styles.divider}></div>

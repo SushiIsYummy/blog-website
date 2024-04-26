@@ -1,17 +1,15 @@
 import styles from './Content.module.css';
-import PostItem from './PostItem/PostItem';
 import CommentItem from './CommentItem/CommentItem';
 import PostAPI from '../../../api/PostAPI';
 import { useEffect, useRef, useState } from 'react';
 import { SIDEBAR_ITEMS } from '../sidebarItems';
-import { useNavigate } from 'react-router-dom';
+import PostsList from './PostsList/PostsList';
 
 function Content({ selectedBlogId, selectedSidebarItem }) {
   const loadingContent = useRef(true);
   loadingContent.current = true;
   const [cache, setCache] = useState(new Map());
   const cacheKey = `${selectedBlogId}-${selectedSidebarItem}`;
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchAndSetContent(selectedBlogId, selectedSidebarItem) {
@@ -63,21 +61,7 @@ function Content({ selectedBlogId, selectedSidebarItem }) {
 
     let noItems = items.length === 0;
     if (selectedSidebarItem === SIDEBAR_ITEMS.POSTS) {
-      return noItems ? (
-        <p>No posts found in blog.</p>
-      ) : (
-        items.map((post) => (
-          <PostItem
-            key={post._id}
-            postData={post}
-            onClick={() =>
-              navigate(
-                `/dashboard/blogs/${selectedBlogId}/posts/${post._id}/edit`,
-              )
-            }
-          />
-        ))
-      );
+      return noItems ? <p>No posts found in blog.</p> : <PostsList />;
     } else if (selectedSidebarItem === SIDEBAR_ITEMS.COMMENTS) {
       return noItems ? (
         <p>No comments found in blog.</p>

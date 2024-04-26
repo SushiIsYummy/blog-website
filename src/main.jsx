@@ -13,13 +13,13 @@ const router = createBrowserRouter(routesConfig);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider>
-      <DashboardSidebarProvider>
-        <MantineProvider>
+    <MantineProvider>
+      <AuthProvider>
+        <DashboardSidebarProvider>
           <Notifications position='bottom-left' zIndex={1001} />
           <RouterProvider router={router} />
-        </MantineProvider>
-      </DashboardSidebarProvider>
-    </AuthProvider>
+        </DashboardSidebarProvider>
+      </AuthProvider>
+    </MantineProvider>
   </React.StrictMode>,
 );

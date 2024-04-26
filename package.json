@@ -10,14 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mantine/core": "^7.7.1",
-    "@mantine/hooks": "^7.7.1",
-    "@mantine/notifications": "^7.7.1",
+    "@mantine/core": "^7.8.0",
+    "@mantine/hooks": "^7.8.0",
+    "@mantine/notifications": "^7.8.0",
     "@react-hook/media-query": "^1.1.1",
     "@tabler/icons-react": "^3.1.0",
     "@tinymce/tinymce-react": "^4.3.2",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.7",
+    "clsx": "^2.1.0",
     "dotenv": "^16.4.1",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.2",

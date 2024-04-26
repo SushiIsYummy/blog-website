@@ -2,7 +2,7 @@ import styles from './Header.module.css';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import AuthContext from '../../context/AuthProvider';
 import { useContext } from 'react';
-import UserMenu from '../../components/Dropdown/UserMenu';
+import UserMenu from './UserMenu/UserMenu';
 import { useDashboardSidebar } from '../../context/DashboardSidebarContext';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoMdArrowRoundBack } from 'react-icons/io';
@@ -13,9 +13,14 @@ function Header({ headerRef }) {
   const navigate = useNavigate();
   const { blogId } = useParams();
   const { toggleDashboardSidebar } = useDashboardSidebar();
-  const onDashboardPage = location.pathname.startsWith('/dashboard');
+  const onDashboardPage =
+    location.pathname === '/dashboard' ||
+    location.pathname.match(/^\/dashboard\/blogs\/([^/]+)\/([^/]+)$/);
   const onEditPostPage = location.pathname.match(
     /^\/dashboard\/blogs\/([^/]+)\/posts\/([^/]+)\/edit$/,
+  );
+  const onPreviewPostPage = location.pathname.match(
+    /^\/dashboard\/blogs\/([^/]+)\/posts\/([^/]+)\/preview$/,
   );
 
   function handleBackArrowClick() {
@@ -28,13 +33,13 @@ function Header({ headerRef }) {
     <header ref={headerRef} className={styles.header}>
       <nav className={styles.headerNav}>
         <div className={styles.leftSide}>
-          {onDashboardPage && !onEditPostPage ? (
+          {onDashboardPage ? (
             <GiHamburgerMenu
               className={styles.hamburgerMenu}
               onClick={toggleDashboardSidebar}
             />
           ) : null}
-          {onEditPostPage && (
+          {(onEditPostPage || onPreviewPostPage) && (
             <IoMdArrowRoundBack
               className={styles.backArrow}
               onClick={handleBackArrowClick}
@@ -51,17 +56,12 @@ function Header({ headerRef }) {
             </NavLink>
           )}
           {user?.role === 'user' && (
-            <>
-              {/* <NavLink to={'/new-post'} className={styles.writeButton}>
-                Write
-              </NavLink> */}
-              <UserMenu
-                userProfilePic={
-                  user.profile_photo ?? '/images/default_profile_photo.jpg'
-                }
-                userUsername={user?.username}
-              />
-            </>
+            <UserMenu
+              userProfilePic={
+                user.profile_photo ?? '/images/default_profile_photo.jpg'
+              }
+              userUsername={user?.username}
+            />
           )}
         </div>
       </nav>

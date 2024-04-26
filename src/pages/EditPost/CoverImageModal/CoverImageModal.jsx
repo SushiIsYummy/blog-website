@@ -1,5 +1,5 @@
 import { useDisclosure, usePageLeave } from '@mantine/hooks';
-import { Modal, useMantineTheme } from '@mantine/core';
+import { Modal } from '@mantine/core';
 import styles from './CoverImageModal.module.css';
 import { useState } from 'react';
 import checkImageValidity from '../../../utils/checkImageValidity';
@@ -67,7 +67,7 @@ function CoverImageModal({
   async function updateCoverImage() {
     try {
       setUpdatingCoverImage(true);
-      const updatedPost = await PostAPI.updatePost(postId, {
+      const updatedPost = await PostAPI.updatePostContent(postId, {
         cover_image: newCoverImage,
       });
       setCurrentCoverImage(newCoverImage);

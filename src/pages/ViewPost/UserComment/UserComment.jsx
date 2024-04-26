@@ -100,7 +100,7 @@ function UserComment({
 
 UserComment.propTypes = {
   profilePic: PropTypes.string,
-  onUserCommentCommentClick: PropTypes.func,
+  onUserCommentActionClick: PropTypes.func,
   onUserCancelClick: PropTypes.func,
 };
 

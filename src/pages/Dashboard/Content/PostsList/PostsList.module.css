@@ -1,0 +1,42 @@
+.postItems {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filterBar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.filterSelect {
+  max-width: 200px;
+}
+
+.loadingIconContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.noPostsMsg {
+  text-align: center;
+}
+
+@media screen and (min-width: 320px) {
+  .filterSelect {
+    max-width: 150px;
+  }
+}
+
+@media screen and (min-width: 340px) {
+  .filterSelect {
+    max-width: 200px;
+  }
+}
+
+@media screen and (min-width: 340px) {
+  .filterSelect {
+    max-width: 200px;
+  }
+}

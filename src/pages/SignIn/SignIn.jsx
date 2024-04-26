@@ -1,13 +1,11 @@
 import { Form, NavLink } from 'react-router-dom';
 import styles from './SignIn.module.css';
-import AuthAPI from '../../api/AuthAPI';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import AuthContext from '../../context/AuthProvider';
-import { useLocation, useNavigate, Navigate } from 'react-router-dom';
-import underscoreToCamelCase from '../../utils/underscoreToCamelCase';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function SignIn() {
-  const { signIn, isLoggedIn } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const { state: locationState } = useLocation();
 
@@ -15,8 +13,6 @@ function SignIn() {
   const [password, setPassword] = useState('');
 
   const [errors, setErrors] = useState({
-    username: '',
-    password: '',
     usernameAndPassword: '',
   });
 
@@ -31,7 +27,9 @@ function SignIn() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('signing in!');
       await signIn(username, password);
+      console.log('signed in!');
       if (locationState) {
         const { redirectTo } = locationState;
         navigate(`${redirectTo.pathname}${redirectTo.search}`);
@@ -39,26 +37,7 @@ function SignIn() {
         navigate('/');
       }
     } catch (err) {
-      console.log(err);
-      const newErrors = {};
-      const errMessageParsed = JSON.parse(err.message ?? null);
-      let responseErrors = errMessageParsed.data?.errors;
-      if (responseErrors) {
-        responseErrors.map((error) => {
-          newErrors[`${underscoreToCamelCase(error.path)}`] = error.msg;
-        });
-        setErrors(newErrors);
-      }
-      let responseError = errMessageParsed.data?.error;
-      console.log(responseError);
-      if (responseError) {
-        setErrors({
-          username: '',
-          password: '',
-          usernameAndPassword: responseError.message,
-        });
-      }
-      console.error(err.message);
+      setErrors({ usernameAndPassword: err.message });
     }
   };
 
@@ -86,7 +65,6 @@ function SignIn() {
             value={password}
             onChange={onPasswordChange}
           />
-          <span className={styles.errorMsg}>{errors.password}</span>
           <span className={styles.errorMsg}>{errors.usernameAndPassword}</span>
         </div>
         <button className={styles.signInButton}>Sign In</button>

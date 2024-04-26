@@ -1,7 +1,11 @@
+.postContainerContainer {
+  position: relative;
+  overflow: auto;
+}
+
 .postContainer {
   display: flex;
   justify-content: center;
-  /* flex: 1; */
 }
 
 .postContainer a:link,
@@ -9,6 +13,34 @@
   color: black;
   text-decoration: none;
 }
+
+.watermarkContainer {
+  position: sticky;
+  top: 0px;
+  z-index: 3;
+}
+
+.previewWatermark {
+  position: absolute;
+  top: 75px;
+  left: -225px;
+  width: 600px;
+  margin: 0;
+  padding: 10px;
+  font-size: 24px;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0, 0.4);
+  transform: rotate(-45deg);
+  transform-origin: 50% 0;
+  pointer-events: none;
+}
+
+/* .previewWatermark p {
+  padding: 10px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.4);
+} */
 
 .post {
   display: flex;
@@ -118,7 +150,7 @@ a.blogLink:hover {
 }
 
 .commentsHeader {
-  padding: 20px 0;
+  padding: 20px 0 5px 0;
 }
 
 .userComment {
@@ -169,7 +201,7 @@ a.blogLink:hover {
       rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
   }
 
-  .postContainer {
+  .postContainerContainer {
     position: relative;
     padding: 30px;
   }

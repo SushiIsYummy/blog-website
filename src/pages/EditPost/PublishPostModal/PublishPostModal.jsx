@@ -20,7 +20,7 @@ function PublishPostModal({
         message: 'Publishing post...',
         autoClose: false,
       });
-      const updatedPost = await PostAPI.updatePost(postId, {
+      const updatedPost = await PostAPI.updatePostContent(postId, {
         published: true,
       });
       setPostIsPublished(true);

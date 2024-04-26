@@ -1,0 +1,38 @@
+.deletePostModal {
+}
+
+.message {
+  padding: 4px 0 0px 0;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.message .postTitle {
+  white-space: nowrap;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid black;
+  color: black;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.deleteButton {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #0082c9;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}

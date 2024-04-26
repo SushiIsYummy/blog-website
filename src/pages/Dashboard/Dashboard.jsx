@@ -5,7 +5,7 @@ import NewBlogModal from './NewBlogModal/NewBlogModal';
 import BlogAPI from '../../api/BlogAPI';
 import AuthContext from '../../context/AuthProvider';
 import Content from './Content/Content';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { SIDEBAR_ITEMS, SIDEBAR_ITEMS_ARRAY } from './sidebarItems';
 import getHeaderHeight from '../../getHeaderHeight';
 
@@ -27,6 +27,7 @@ function Dashboard() {
     (validSidebarOption && sidebarOptionParam) || SIDEBAR_ITEMS.POSTS,
   );
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (blogIdParam) {
@@ -64,9 +65,6 @@ function Dashboard() {
         }
       } else if (blogs.length === 0) {
         setSelectedBlogId('none');
-        // navigate(`/dashboard/blogs/${sidebarOptionParam}`, {
-        //   replace: true,
-        // });
       }
     }
   }, [
@@ -99,7 +97,7 @@ function Dashboard() {
   return (
     <>
       <div className={styles.dashboard}>
-        {blogs !== null && (
+        {blogs !== null && location.pathname !== '/dashboard' && (
           <DashboardSidebar
             openNewBlogModal={openNewBlogModal}
             blogs={blogs}

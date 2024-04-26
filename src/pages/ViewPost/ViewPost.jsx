@@ -49,13 +49,20 @@ export async function loader({ request, params }) {
   return null;
 }
 
+export async function previewLoader({ request, params }) {
+  const postResponse = await PostAPI.getPostById(params.postId);
+  return {
+    postResponse,
+  };
+}
+
 const voteOptions = {
   UPVOTE: 1,
   NEUTRAL: 0,
   DOWNVOTE: -1,
 };
 
-function ViewPost() {
+function ViewPost({ isPreview }) {
   const { headerRef } = useOutletContext();
   let {
     postResponse,
@@ -64,13 +71,16 @@ function ViewPost() {
     highlightedComment,
   } = useLoaderData();
   const post = postResponse.data.post;
-  const initialComments = commentsResponse.data.comments;
-  const initialCommentsWithoutHighlightedComment = initialComments.filter(
-    (comment) => highlightedComment && highlightedComment._id !== comment._id,
-  );
-  const upvotesOnPost = postVotesResponse.data.upvotes;
-  const downvotesOnPost = postVotesResponse.data.downvotes;
-  const userVote = postVotesResponse.data.user_vote;
+  const initialComments = commentsResponse?.data?.comments || [];
+  const initialCommentsWithoutHighlightedComment = initialComments
+    ? initialComments.filter(
+        (comment) =>
+          highlightedComment && highlightedComment._id !== comment._id,
+      )
+    : [];
+  const upvotesOnPost = postVotesResponse?.data?.upvotes || 0;
+  const downvotesOnPost = postVotesResponse?.data?.downvotes || 0;
+  const userVote = postVotesResponse?.data?.user_vote || 0;
   const isMaxWidth768 = useMediaQuery('(max-width: 768px)');
   const isFirstRender = useRef(true);
 
@@ -102,6 +112,10 @@ function ViewPost() {
       }
     }
 
+    if (isPreview) {
+      return;
+    }
+
     // prevent sending unnecessary request on first render
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -123,7 +137,7 @@ function ViewPost() {
       debouncedRequest.cancel();
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [currentVote, post._id]);
+  }, [currentVote, isPreview, post._id]);
 
   async function onUserCommentCommentClick(comment) {
     try {
@@ -252,52 +266,54 @@ function ViewPost() {
               {commentBadge}
             </div>
           )}
-          <div ref={commentsSection} className={styles.commentSection}>
-            <div className={styles.commentsHeader}>
-              <h2 className={styles.commentsLabel}>
-                {initialComments.length} Comments
-              </h2>
-              <div className={styles.userComment}>
-                {!userCommentLoading ? (
-                  <>
-                    <UserComment
-                      profilePic={post.author.profile_photo}
-                      onUserCommentActionClick={onUserCommentCommentClick}
-                      userCommentLoading={userCommentLoading}
-                      setUserCommentLoading={setUserCommentLoading}
-                      actionButtonName={'Comment'}
+          {!isPreview && (
+            <div ref={commentsSection} className={styles.commentSection}>
+              <div className={styles.commentsHeader}>
+                <h2 className={styles.commentsLabel}>
+                  {initialComments.length} Comments
+                </h2>
+                <div className={styles.userComment}>
+                  {!userCommentLoading ? (
+                    <>
+                      <UserComment
+                        profilePic={post.author.profile_photo}
+                        onUserCommentActionClick={onUserCommentCommentClick}
+                        userCommentLoading={userCommentLoading}
+                        setUserCommentLoading={setUserCommentLoading}
+                        actionButtonName={'Comment'}
+                      />
+                    </>
+                  ) : (
+                    <div className={styles.userCommentLoading}>
+                      <l-ring
+                        size='30'
+                        stroke='3'
+                        color='black'
+                        speed='1.5'
+                      ></l-ring>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className={styles.comments}>
+                {highlightedComment ? (
+                  <div className={styles.highlightedComment}>
+                    <p className={styles.highlightedCommentTag}>
+                      Highlighted Comment
+                    </p>
+                    <Comment
+                      key={highlightedComment._id}
+                      commentData={highlightedComment}
+                      highlightedComment={true}
                     />
-                  </>
-                ) : (
-                  <div className={styles.userCommentLoading}>
-                    <l-ring
-                      size='30'
-                      stroke='3'
-                      color='black'
-                      speed='1.5'
-                    ></l-ring>
                   </div>
-                )}
+                ) : null}
+                {comments.map((comment) => {
+                  return <Comment key={comment._id} commentData={comment} />;
+                })}
               </div>
             </div>
-            <div className={styles.comments}>
-              {highlightedComment ? (
-                <div className={styles.highlightedComment}>
-                  <p className={styles.highlightedCommentTag}>
-                    Highlighted Comment
-                  </p>
-                  <Comment
-                    key={highlightedComment._id}
-                    commentData={highlightedComment}
-                    highlightedComment={true}
-                  />
-                </div>
-              ) : null}
-              {comments.map((comment) => {
-                return <Comment key={comment._id} commentData={comment} />;
-              })}
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,10 +1,14 @@
 .postItem {
   display: flex;
-  height: 70px;
+  box-shadow: rgba(255, 255, 255, 0) 0px 3px 8px;
   border: 1px solid rgb(197, 189, 189);
   border-radius: 5px;
   overflow: hidden;
   cursor: pointer;
+}
+
+.postItem:hover {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .postCoverImageContainer {
@@ -12,18 +16,18 @@
   justify-content: center;
   background-color: #d4d4d4;
   aspect-ratio: 16 / 9;
-  /* height: 60px; */
-  /* max-width: 100px; */
-  /* width: fit-content; */
+  max-width: 120px;
+  margin: auto;
   overflow: hidden;
 }
 
 .postDetails {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  gap: 2px;
   flex: 1;
   padding: 10px;
-  /* padding: 10px; */
 }
 
 .topPart,
@@ -31,8 +35,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex: 1;
-  font-size: 0.9rem;
+  gap: 10px;
+}
+
+.topPart p {
+  font-size: 1.1rem;
 }
 
 .title {
@@ -45,16 +52,82 @@
   text-overflow: ellipsis;
 }
 
-.usernameAndProfilepic {
+.topRight {
   display: flex;
-  gap: 5px;
   align-items: center;
+  gap: 10px;
+}
+
+.usernameAndProfilePic {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .profilePic {
   width: 26px;
   height: 26px;
   border-radius: 50%;
+}
+
+.options {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.options.visible {
+  display: flex;
+}
+
+.options button {
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.options a,
+.options button,
+.options svg {
+  width: 26px;
+  height: 26px;
+}
+
+.options svg {
+  padding: 2px;
+  color: black;
+}
+
+.options button:hover {
+  background-color: rgba(0, 0, 0, 0.13);
+}
+
+.trashIcon {
+  width: 16px;
+  height: 16px;
+  color: gray;
+}
+
+.bottomPart p,
+.bottomPart span {
+  font-size: 0.9rem;
+}
+
+.publishStatusAndLastModifiedDate {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.publishStatus.draft {
+  color: rgb(233, 58, 4);
+}
+.publishStatus.published {
+  color: green;
+}
+
+.trashIndicator {
+  color: rgb(73, 73, 73);
 }
 
 .lastModifiedDate {
@@ -64,4 +137,23 @@
 .commentCount {
   display: flex;
   align-items: center;
+}
+
+@media only screen and (min-width: 360px) {
+  .postCoverImageContainer {
+    max-width: 155px;
+  }
+}
+
+@media only screen and (min-width: 500px) {
+  .publishStatusAndLastModifiedDate {
+    flex-direction: row;
+    gap: 0px;
+  }
+}
+
+@media only screen and (min-width: 680px) {
+  .postCoverImageContainer {
+    max-width: 170px;
+  }
 }
