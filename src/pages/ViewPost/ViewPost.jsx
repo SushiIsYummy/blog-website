@@ -10,7 +10,6 @@ import { useMediaQuery } from '@react-hook/media-query';
 import { FaRegComment } from 'react-icons/fa';
 import UserComment from './UserComment/UserComment';
 import Comment from './Comment/Comment';
-import scrollToElementWithOffset from '../../utils/scrollToElementWithOffset';
 
 export async function loader({ request, params }) {
   try {
@@ -49,7 +48,7 @@ export async function loader({ request, params }) {
   return null;
 }
 
-export async function previewLoader({ request, params }) {
+export async function previewLoader({ params }) {
   const postResponse = await PostAPI.getPostById(params.postId);
   return {
     postResponse,
@@ -63,7 +62,6 @@ const voteOptions = {
 };
 
 function ViewPost({ isPreview }) {
-  const { headerRef } = useOutletContext();
   let {
     postResponse,
     postVotesResponse,
@@ -139,7 +137,7 @@ function ViewPost({ isPreview }) {
     };
   }, [currentVote, isPreview, post._id]);
 
-  async function onUserCommentCommentClick(comment) {
+  async function handleUserCommentActionClick(comment) {
     try {
       setUserCommentLoading(true);
       const createdComment = await PostAPI.createCommentOnPost(post._id, {
@@ -154,10 +152,11 @@ function ViewPost({ isPreview }) {
     }
   }
 
+  const postContainerContainer = useRef(null);
   const commentsSection = useRef(null);
   const commentBadge = (
     <div
-      className={`${styles.commentBadge} ${isMaxWidth768 ? styles.horizontal : styles.vertical}`}
+      className={`${styles.commentBadge} ${isMaxWidth768 ? styles.horizontal : ''}`}
       onClick={jumpToComments}
     >
       <FaRegComment
@@ -170,150 +169,163 @@ function ViewPost({ isPreview }) {
 
   function jumpToComments() {
     if (commentsSection.current) {
-      const headerHeight = parseFloat(
-        window.getComputedStyle(headerRef.current).height,
-      );
-      scrollToElementWithOffset(commentsSection.current, headerHeight);
+      commentsSection.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     }
   }
 
   return (
-    <div className={styles.postContainer}>
-      {!isMaxWidth768 && (
-        <div className={styles.votesAndComments}>
-          <VotingWidget
-            orientation={'vertical'}
-            currentVote={currentVote}
-            setCurrentVote={setCurrentVote}
-            upvotes={upvotes}
-            downvotes={downvotes}
-            setUpvotes={setUpvotes}
-            setDownvotes={setDownvotes}
-          />
-          {commentBadge}
+    <div ref={postContainerContainer} className={styles.postContainerContainer}>
+      {isPreview && (
+        <div className={styles.watermarkContainer}>
+          <div className={styles.previewWatermark}>PREVIEW</div>
         </div>
       )}
-      <div className={styles.post}>
-        {post.cover_image && (
-          <div className={styles.coverImageContainer}>
-            <img src={post.cover_image ? post.cover_image : null} alt='' />
+      <div className={styles.postContainer}>
+        {!isMaxWidth768 && (
+          <div className={styles.votesAndComments}>
+            <VotingWidget
+              orientation={'vertical'}
+              currentVote={currentVote}
+              setCurrentVote={setCurrentVote}
+              upvotes={upvotes}
+              downvotes={downvotes}
+              setUpvotes={setUpvotes}
+              setDownvotes={setDownvotes}
+            />
+            {commentBadge}
           </div>
         )}
-        <div className={styles.postBody}>
-          <h1 className={styles.postTitle}>{post.title}</h1>
-          {post.subheading !== '' && (
-            <h2 className={styles.postSubheading}>{post.subheading}</h2>
+        <div className={styles.post}>
+          {post.cover_image && (
+            <div className={styles.coverImageContainer}>
+              <img src={post.cover_image ? post.cover_image : null} alt='' />
+            </div>
           )}
-          <div className={styles.postInfo}>
-            <img
-              className={styles.authorImage}
-              src={
-                post.author.profile_photo !== null
-                  ? post.author.profile_photo
-                  : '/images/default_profile_photo.jpg'
-              }
-              alt=''
-            />
-            <div className={styles.rightSide}>
-              <NavLink
-                className={styles.authorName}
-                to={`/users/${post.author._id}`}
-              >
-                {post.author.first_name} {post.author.last_name}
-              </NavLink>
-              <div className={styles.publishedIn}>
-                <p>
-                  Published in&nbsp;
-                  <NavLink
-                    className={styles.blogLink}
-                    to={`/blogs/${post.blog._id}`}
-                  >
-                    {post.blog.title}
-                  </NavLink>{' '}
-                  • {toRelativeTimeLuxon(post.created_at)}
-                </p>
+          <div className={styles.postBody}>
+            <h1 className={styles.postTitle}>{post.title}</h1>
+            {post.subheading !== '' && (
+              <h2 className={styles.postSubheading}>{post.subheading}</h2>
+            )}
+            <div className={styles.postInfo}>
+              <img
+                className={styles.authorImage}
+                src={
+                  post.author.profile_photo !== null
+                    ? post.author.profile_photo
+                    : '/images/default_profile_photo.jpg'
+                }
+                alt=''
+              />
+              <div className={styles.rightSide}>
+                <NavLink
+                  className={styles.authorName}
+                  to={`/users/${post.author._id}`}
+                >
+                  {post.author.first_name} {post.author.last_name}
+                </NavLink>
+                <div className={styles.publishedIn}>
+                  <p>
+                    Published in&nbsp;
+                    <NavLink
+                      className={styles.blogLink}
+                      to={`/blogs/${post.blog._id}`}
+                    >
+                      {post.blog.title}
+                    </NavLink>{' '}
+                    • {toRelativeTimeLuxon(post.created_at)}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-          {isMaxWidth768 && (
-            <div className={`${styles.votesAndComments}`}>
-              <VotingWidget
-                orientation={'horizontal'}
-                currentVote={currentVote}
-                setCurrentVote={setCurrentVote}
-                upvotes={upvotes}
-                downvotes={downvotes}
-                setUpvotes={setUpvotes}
-                setDownvotes={setDownvotes}
-              />
-              {commentBadge}
+            {isMaxWidth768 && (
+              <div className={`${styles.votesAndComments}`}>
+                <VotingWidget
+                  orientation={'horizontal'}
+                  currentVote={currentVote}
+                  setCurrentVote={setCurrentVote}
+                  upvotes={upvotes}
+                  downvotes={downvotes}
+                  setUpvotes={setUpvotes}
+                  setDownvotes={setDownvotes}
+                />
+                {commentBadge}
+              </div>
+            )}
+            <div className={styles.postContent}>
+              <TinyMCEView content={post.content}></TinyMCEView>
             </div>
-          )}
-          <div className={styles.postContent}>
-            <TinyMCEView content={post.content}></TinyMCEView>
-          </div>
-          {isMaxWidth768 && (
-            <div className={`${styles.votesAndComments}`}>
-              <VotingWidget
-                orientation={'horizontal'}
-                currentVote={currentVote}
-                setCurrentVote={setCurrentVote}
-                upvotes={upvotes}
-                downvotes={downvotes}
-                setUpvotes={setUpvotes}
-                setDownvotes={setDownvotes}
-              />
-              {commentBadge}
-            </div>
-          )}
-          {!isPreview && (
-            <div ref={commentsSection} className={styles.commentSection}>
+            {isMaxWidth768 && (
+              <div className={`${styles.votesAndComments}`}>
+                <VotingWidget
+                  orientation={'horizontal'}
+                  currentVote={currentVote}
+                  setCurrentVote={setCurrentVote}
+                  upvotes={upvotes}
+                  downvotes={downvotes}
+                  setUpvotes={setUpvotes}
+                  setDownvotes={setDownvotes}
+                />
+                {commentBadge}
+              </div>
+            )}
+            <div ref={commentsSection} className={styles.commentsSection}>
               <div className={styles.commentsHeader}>
                 <h2 className={styles.commentsLabel}>
                   {initialComments.length} Comments
                 </h2>
-                <div className={styles.userComment}>
-                  {!userCommentLoading ? (
-                    <>
-                      <UserComment
-                        profilePic={post.author.profile_photo}
-                        onUserCommentActionClick={onUserCommentCommentClick}
-                        userCommentLoading={userCommentLoading}
-                        setUserCommentLoading={setUserCommentLoading}
-                        actionButtonName={'Comment'}
-                      />
-                    </>
-                  ) : (
-                    <div className={styles.userCommentLoading}>
-                      <l-ring
-                        size='30'
-                        stroke='3'
-                        color='black'
-                        speed='1.5'
-                      ></l-ring>
-                    </div>
-                  )}
-                </div>
               </div>
-              <div className={styles.comments}>
-                {highlightedComment ? (
-                  <div className={styles.highlightedComment}>
-                    <p className={styles.highlightedCommentTag}>
-                      Highlighted Comment
-                    </p>
-                    <Comment
-                      key={highlightedComment._id}
-                      commentData={highlightedComment}
-                      highlightedComment={true}
-                    />
+              {!isPreview && (
+                <>
+                  <div className={styles.userComment}>
+                    {!userCommentLoading ? (
+                      <>
+                        <UserComment
+                          profilePic={post.author.profile_photo}
+                          onUserCommentActionClick={
+                            handleUserCommentActionClick
+                          }
+                          userCommentLoading={userCommentLoading}
+                          setUserCommentLoading={setUserCommentLoading}
+                          actionButtonName={'Comment'}
+                        />
+                      </>
+                    ) : (
+                      <div className={styles.userCommentLoading}>
+                        <l-ring
+                          size='30'
+                          stroke='3'
+                          color='black'
+                          speed='1.5'
+                        ></l-ring>
+                      </div>
+                    )}
                   </div>
-                ) : null}
-                {comments.map((comment) => {
-                  return <Comment key={comment._id} commentData={comment} />;
-                })}
-              </div>
+                  <div className={styles.comments}>
+                    {highlightedComment ? (
+                      <div className={styles.highlightedComment}>
+                        <p className={styles.highlightedCommentTag}>
+                          Highlighted Comment
+                        </p>
+                        <Comment
+                          key={highlightedComment._id}
+                          commentData={highlightedComment}
+                          highlightedComment={true}
+                        />
+                      </div>
+                    ) : null}
+                    {comments.map((comment) => {
+                      return (
+                        <Comment key={comment._id} commentData={comment} />
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

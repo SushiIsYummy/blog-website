@@ -1,5 +1,4 @@
 .editPost {
-  height: calc(100vh - 52px);
 }
 
 .postContainer {
@@ -54,9 +53,9 @@
   padding: 15px 10px;
 }
 
-.topPart {
+.toolbar {
   position: sticky;
-  top: 52px;
+  top: var(--header-height);
   padding: 10px;
   display: flex;
   justify-content: end;

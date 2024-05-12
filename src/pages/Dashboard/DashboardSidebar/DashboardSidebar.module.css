@@ -1,5 +1,6 @@
 .sidebar {
   position: sticky;
+  height: calc(100vh - var(--header-height));
   width: 300px;
   background-color: #333333;
   transform: translateX(-300px);

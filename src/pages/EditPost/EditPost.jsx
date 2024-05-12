@@ -2,7 +2,7 @@ import { useLoaderData, useParams } from 'react-router-dom';
 import styles from './EditPost.module.css';
 import PostAPI from '../../api/PostAPI';
 import TinyMCEEdit from '../../components/TinyMCE/TinyMCEEdit';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../../context/AuthProvider';
 import AutoResizeTextarea from '../../components/AutoResizeTextarea/AutoResizeTextarea';
@@ -51,7 +51,7 @@ function EditPost() {
   );
 
   const contentRef = useRef(null);
-  const topPartRef = useRef(null);
+  const postToolbar = useRef(null);
 
   useEffectAfterMount(() => {
     setPostIsSaved(false);
@@ -87,9 +87,37 @@ function EditPost() {
     contentRef.current = editor;
   };
 
+  const headerHeight = getComputedStyle(document.body).getPropertyValue(
+    '--header-height',
+  );
+
+  const [toolbarHeight, setToolbarHeight] = useState(0);
+
+  useEffect(() => {
+    const observedElement = postToolbar.current;
+    if (!observedElement) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const contentHeight = entries[0].contentRect.height;
+      const paddingTop = parseFloat(
+        window.getComputedStyle(entries[0].target).paddingTop,
+      );
+      const paddingBottom = parseFloat(
+        window.getComputedStyle(entries[0].target).paddingBottom,
+      );
+      setToolbarHeight(contentHeight + paddingTop + paddingBottom);
+    });
+
+    resizeObserver.observe(observedElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [postToolbar]);
+
   return (
     <div className={styles.editPost}>
-      <div className={styles.topPart} ref={topPartRef}>
+      <div className={styles.toolbar} ref={postToolbar}>
         {savingPost ? (
           <p>Saving...</p>
         ) : (
@@ -138,7 +166,7 @@ function EditPost() {
         <div
           className={styles.contentContainer}
           style={{
-            maxHeight: `calc(100vh - 52px - ${topPartRef.current ? `${topPartRef.current.clientHeight}px` : '0'})`,
+            height: `calc(100vh - ${headerHeight} - ${toolbarHeight}px)`,
           }}
         >
           <TinyMCEEdit

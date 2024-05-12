@@ -7,7 +7,6 @@ import AuthContext from '../../context/AuthProvider';
 import Content from './Content/Content';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { SIDEBAR_ITEMS, SIDEBAR_ITEMS_ARRAY } from './sidebarItems';
-import getHeaderHeight from '../../getHeaderHeight';
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -92,8 +91,6 @@ function Dashboard() {
     closeNewBlogModal();
   }
 
-  const headerHeight = getHeaderHeight();
-
   return (
     <>
       <div className={styles.dashboard}>
@@ -107,12 +104,7 @@ function Dashboard() {
             setSelectedSidebarItem={setSelectedSidebarItem}
           />
         )}
-        <div
-          className={styles.contentContainer}
-          style={
-            headerHeight ? { height: `calc(100vh - ${headerHeight}px)` } : {}
-          }
-        >
+        <div className={styles.contentContainer}>
           {validSidebarOption && selectedBlogId && (
             <Content
               selectedBlogId={selectedBlogId}
