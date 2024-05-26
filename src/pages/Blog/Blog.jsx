@@ -4,7 +4,7 @@ import BlogAPI from '../../api/BlogAPI';
 import PostAPI from '../../api/PostAPI';
 import convertHtmlStringToRawContent from '../../utils/convertHtmlStringToRawContent';
 
-export async function loader({ params }) {
+async function loader({ params }) {
   try {
     const blogResponse = await BlogAPI.getBlogById(params.blogId);
     const postsResponse = await PostAPI.getPostsByBlog(params.blogId);
@@ -69,5 +69,7 @@ function Blog() {
     </div>
   );
 }
+
+Blog.loader = loader;
 
 export default Blog;

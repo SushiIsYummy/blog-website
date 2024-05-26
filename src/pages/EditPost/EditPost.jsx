@@ -10,7 +10,7 @@ import useEffectAfterMount from '../../hooks/useEffectAfterMount';
 import OverflowMenu from './OverflowMenu/OverflowMenu';
 import PublishPostModal from './PublishPostModal/PublishPostModal';
 
-export async function loader({ params }) {
+async function loader({ params }) {
   try {
     let postResponse = null;
     if (params.postId) {
@@ -188,5 +188,7 @@ function EditPost() {
     </div>
   );
 }
+
+EditPost.loader = loader;
 
 export default EditPost;

@@ -12,7 +12,7 @@ import UserRecent from './tabs/UserRecent/UserRecent';
 import UserBlogs from './tabs/UserBlogs/UserBlogs';
 import UserAbout from './tabs/UserAbout/UserAbout';
 
-export async function loader({ params }) {
+async function loader({ params }) {
   try {
     const userResponse = await UserAPI.getUserById(params.userId);
     return userResponse;
@@ -101,5 +101,7 @@ function UserProfile() {
     </div>
   );
 }
+
+UserProfile.loader = loader;
 
 export default UserProfile;

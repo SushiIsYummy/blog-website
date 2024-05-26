@@ -6,7 +6,7 @@ import PostAPI from '../../api/PostAPI';
 import AuthContext from '../../context/AuthProvider';
 import { useContext } from 'react';
 
-export async function loader() {
+async function loader() {
   try {
     const postsResponse = await PostAPI.getAllPosts();
     return { postsResponse };
@@ -68,5 +68,7 @@ function Home() {
     </div>
   );
 }
+
+Home.loader = loader;
 
 export default Home;

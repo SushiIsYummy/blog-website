@@ -19,7 +19,7 @@ const COMMENT_ORDER_BY_OPTIONS = {
 
 const COMMENT_ORDER_BY_OPTIONS_ARRAY = ['newest', 'rank'];
 
-export async function loader({ request, params }) {
+async function loader({ request, params }) {
   try {
     const urlSearchParams = new URL(request.url).searchParams;
     const highlightedCommentIdQuery = urlSearchParams.get('hc');
@@ -61,7 +61,7 @@ export async function loader({ request, params }) {
   return null;
 }
 
-export async function previewLoader({ params }) {
+async function previewLoader({ params }) {
   const postResponse = await PostAPI.getPostById(params.postId);
   return {
     postResponse,
@@ -462,5 +462,8 @@ function ViewPost({ isPreview }) {
     </div>
   );
 }
+
+ViewPost.loader = loader;
+ViewPost.previewLoader = previewLoader;
 
 export default ViewPost;
