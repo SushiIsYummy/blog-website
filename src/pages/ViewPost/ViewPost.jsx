@@ -11,7 +11,7 @@ import { FaRegComment } from 'react-icons/fa';
 import UserComment from './UserComment/UserComment';
 import Comment from './Comment/Comment';
 
-export async function loader({ request, params }) {
+async function loader({ request, params }) {
   try {
     const highlightedCommentIdQuery = new URL(request.url).searchParams.get(
       'hc',
@@ -48,7 +48,7 @@ export async function loader({ request, params }) {
   return null;
 }
 
-export async function previewLoader({ params }) {
+async function previewLoader({ params }) {
   const postResponse = await PostAPI.getPostById(params.postId);
   return {
     postResponse,
@@ -331,5 +331,8 @@ function ViewPost({ isPreview }) {
     </div>
   );
 }
+
+ViewPost.loader = loader;
+ViewPost.previewLoader = previewLoader;
 
 export default ViewPost;
