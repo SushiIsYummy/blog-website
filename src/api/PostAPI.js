@@ -58,8 +58,26 @@ const PostAPI = {
     return response.data;
   },
 
-  getCommentsOnPost: async (postId) => {
-    const response = await axios.get(`/posts/${postId}/comments`);
+  getCommentsOnPost: async (postId, params) => {
+    const response = await axios.get(`/posts/${postId}/comments`, {
+      params,
+    });
+    return response.data;
+  },
+
+  getCommentsOnPostWithExcludedCommentIds: async (
+    postId,
+    orderBy,
+    params,
+    excludedIds,
+  ) => {
+    const response = await axios.post(
+      `/posts/${postId}/comments/${orderBy}`,
+      {
+        excluded_ids: excludedIds,
+      },
+      { params },
+    );
     return response.data;
   },
 

@@ -59,17 +59,18 @@ function Content({ selectedBlogId, selectedSidebarItem }) {
       );
     }
 
-    let noItems = items.length === 0;
+    // let noItems = items.length === 0;
+    // console.log('render items');
     if (selectedSidebarItem === SIDEBAR_ITEMS.POSTS) {
-      return noItems ? <p>No posts found in blog.</p> : <PostsList />;
+      return <PostsList />;
     } else if (selectedSidebarItem === SIDEBAR_ITEMS.COMMENTS) {
-      return noItems ? (
-        <p>No comments found in blog.</p>
-      ) : (
-        items.map((comment) => (
-          <CommentItem key={comment._id} commentData={comment} />
-        ))
-      );
+      // return <p>comments in progress</p>;
+      //   <p>No comments found in blog.</p>
+      // ) : (
+      return items.map((comment) => (
+        <CommentItem key={comment._id} commentData={comment} />
+      ));
+      // );
     }
     return null;
   }
@@ -78,6 +79,7 @@ function Content({ selectedBlogId, selectedSidebarItem }) {
     <div className={styles.content}>
       <div className={styles.itemsList}>
         {selectedBlogId !== 'none' && renderItems()}
+        {/* {selectedBlogId !== 'none' && console.log('pooping')} */}
       </div>
       {selectedBlogId === 'none' && (
         <p>

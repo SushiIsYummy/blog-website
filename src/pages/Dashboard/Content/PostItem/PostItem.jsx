@@ -11,7 +11,13 @@ import PostAPI from '../../../../api/PostAPI';
 import PostItemOptions from './PostItemOptions/PostItemOptions';
 import clsx from 'clsx';
 
-function PostItem({ postData, inTrash, removePost, selectedOption }) {
+function PostItem({
+  lastPostItemRef,
+  postData,
+  inTrash,
+  removePost,
+  selectedOption,
+}) {
   const maxWidth600 = useMediaQuery('(max-width: 600px)');
   const minWidth500 = useMediaQuery('(min-width: 500px)');
   const isHoverDevice = useMediaQuery('(hover: hover)');
@@ -149,6 +155,7 @@ function PostItem({ postData, inTrash, removePost, selectedOption }) {
 
   return (
     <div
+      ref={lastPostItemRef ? lastPostItemRef : null}
       className={styles.postItem}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

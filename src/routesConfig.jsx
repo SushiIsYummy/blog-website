@@ -63,6 +63,7 @@ const routesConfig = [
             path: 'posts/:postId',
             element: <ViewPost />,
             loader: postLoader,
+            shouldRevalidate: false,
           },
           {
             path: 'sign-in',

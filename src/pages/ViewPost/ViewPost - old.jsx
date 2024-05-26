@@ -1,4 +1,4 @@
-import { useLoaderData, NavLink, useParams } from 'react-router-dom';
+import { useLoaderData, NavLink, useOutletContext } from 'react-router-dom';
 import styles from './ViewPost.module.css';
 import PostAPI from '../../api/PostAPI';
 import TinyMCEView from '../../components/TinyMCE/TinyMCEView';
@@ -68,11 +68,6 @@ export async function previewLoader({ params }) {
   };
 }
 
-// const excluded_ids = [];
-// for (let i = 0; i < 200000; i++) {
-//   excluded_ids.push('65cb4edaa1ae05a45a35379b');
-// }
-
 const voteOptions = {
   UPVOTE: 1,
   NEUTRAL: 0,
@@ -105,58 +100,13 @@ function ViewPost({ isPreview }) {
   const [currentVote, setCurrentVote] = useState(userVote);
   const [upvotes, setUpvotes] = useState(upvotesOnPost);
   const [downvotes, setDownvotes] = useState(downvotesOnPost);
-  // const [comments, setComments] = useState(
-  //   (highlightedComment
-  //     ? initialCommentsWithoutHighlightedComment
-  //     : initialComments) || [],
-  // );
-  const [newUserComments, setNewUserComments] = useState([]);
-  const [userCommentLoading, setUserCommentLoading] = useState(false);
-
-  const { postId } = useParams();
-  const [commentsOrderBy, setCommentsOrderBy] = useState(
-    COMMENT_ORDER_BY_OPTIONS.RANK,
+  const [comments, setComments] = useState(
+    (highlightedComment
+      ? initialCommentsWithoutHighlightedComment
+      : initialComments) || [],
   );
-  console.log(`comments order by: ${commentsOrderBy}`);
-  const {
-    isPending,
-    isFetching,
-    isLoading,
-    error,
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ['comments', { commentsOrderBy }],
-    queryFn: getCommentsWithStaticCursor,
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.paging.cursors.next;
-    },
-    gcTime: 0,
-  });
 
-  let limit = 1;
-  function getCommentsWithStaticCursor({ pageParam = null }) {
-    return PostAPI.getCommentsOnPost(postId, {
-      order_by: commentsOrderBy,
-      limit: limit,
-      cursor: pageParam,
-    });
-  }
-
-  // function getCommentsWithoutStaticCursor() {
-  //   return PostAPI.getCommentsOnPostWithExcludedCommentIds(
-  //     postId,
-  //     commentsOrderBy,
-  //     { limit: limit },
-  //     excluded_ids,
-  //     // excludedIds,
-  //   );
-  // }
-
-  // console.log(data);
-  // console.log(comments);
+  const [userCommentLoading, setUserCommentLoading] = useState(false);
 
   // console.log(urlSearchParams);
   // const url = new URL(window.location.href);
@@ -167,9 +117,9 @@ function ViewPost({ isPreview }) {
   // )
   //   ? orderBySearchParam
   //   : COMMENT_ORDER_BY_OPTIONS.RANK;
-  // const [commentsOrderBy, setCommentsOrderBy] = useState(
-  //   COMMENT_ORDER_BY_OPTIONS.RANK,
-  // );
+  const [commentsOrderBy, setCommentsOrderBy] = useState(
+    COMMENT_ORDER_BY_OPTIONS.RANK,
+  );
 
   // useEffect(() => {
   //   const url = new URL(window.location.href);
@@ -189,8 +139,6 @@ function ViewPost({ isPreview }) {
   // }, [isPreview]);
 
   // console.log(comments);
-  useEffect(() => {});
-
   useEffect(() => {
     async function updateVote() {
       try {
@@ -243,12 +191,7 @@ function ViewPost({ isPreview }) {
         content: comment,
         blog: post.blog._id,
       });
-      console.log(createdComment);
-      setNewUserComments((newUserComments) => [
-        createdComment.data.postComment,
-        ...newUserComments,
-      ]);
-      // setComments([createdComment.data.postComment, ...comments]);
+      setComments([createdComment.data.postComment, ...comments]);
     } catch (err) {
       console.error(err);
     } finally {
@@ -382,10 +325,7 @@ function ViewPost({ isPreview }) {
                 </h2>
                 <select
                   value={commentsOrderBy}
-                  onChange={(e) => {
-                    setNewUserComments([]);
-                    setCommentsOrderBy(e.target.value);
-                  }}
+                  onChange={(e) => setCommentsOrderBy(e.target.value)}
                 >
                   <option value='rank'>Top Comments</option>
                   <option value='newest'>Newest</option>
@@ -430,28 +370,11 @@ function ViewPost({ isPreview }) {
                         />
                       </div>
                     ) : null}
-                    {/* {!commentsIsFetching &&
-                      comments.map((comment) => {
-                        return (
-                          <Comment key={comment._id} commentData={comment} />
-                        );
-                      })} */}
-                    {newUserComments.map((comment) => (
-                      <Comment key={comment._id} commentData={comment} />
-                    ))}
-                    {data &&
-                      data.pages.map((page, pageIndex) => (
-                        <>
-                          {page.data.comments.map((comment) => (
-                            <Comment key={comment._id} commentData={comment} />
-                          ))}
-                        </>
-                      ))}
-                    {hasNextPage && (
-                      <button onClick={() => fetchNextPage()}>
-                        get next page
-                      </button>
-                    )}
+                    {comments.map((comment) => {
+                      return (
+                        <Comment key={comment._id} commentData={comment} />
+                      );
+                    })}
                   </div>
                 </>
               )}

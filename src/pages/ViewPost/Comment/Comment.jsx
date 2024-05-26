@@ -25,6 +25,7 @@ function Comment({
   parentReplies,
   setParentReplies,
 }) {
+  console.log(commentData);
   const { user } = useContext(AuthContext);
   const profilePhoto = commentData.author.profile_photo;
   const commentContent = commentData.content;
@@ -244,7 +245,11 @@ Comment.propTypes = {
     }).isRequired,
     created_at: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
-    user_vote: PropTypes.oneOf([voteOptions.UPVOTE, voteOptions.DOWNVOTE]),
+    user_vote: PropTypes.oneOf([
+      voteOptions.UPVOTE,
+      voteOptions.NEUTRAL,
+      voteOptions.DOWNVOTE,
+    ]),
     upvotes: PropTypes.number.isRequired,
     downvotes: PropTypes.number.isRequired,
     post: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
