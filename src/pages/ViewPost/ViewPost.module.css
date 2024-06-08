@@ -150,42 +150,9 @@ a.blogLink:hover {
 .commentBadge:hover {
 }
 
-.commentsHeader {
-  padding: 20px 0 5px 0;
-}
-
-.userComment {
-  margin: 10px 0;
-}
-
-.userCommentLoading {
+.loadingPostContent {
   display: flex;
   justify-content: center;
-}
-
-.userCommentError {
-  display: flex;
-  justify-content: center;
-}
-
-.userCommentError p {
-  color: red;
-}
-
-.comments {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.highlightedCommentTag {
-  padding: 3px 5px;
-  font-size: 0.8rem;
-  color: #1d1c1c;
-  background-color: rgb(199, 193, 193);
-  width: fit-content;
-  font-weight: bold;
-  margin-bottom: 10px;
 }
 
 @media screen and (min-width: 460px) {

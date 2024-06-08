@@ -1,6 +1,6 @@
 import styles from './UserComment.module.css';
 import AutoResizeTextarea from '../../../components/AutoResizeTextarea/AutoResizeTextarea';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import _trimStart from 'lodash/trimStart';
 import PropTypes from 'prop-types';
 

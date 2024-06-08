@@ -1,9 +1,10 @@
 import styles from './RepliesList.module.css';
 import { useRef, useState } from 'react';
-import PostAPI from '../../../api/PostAPI';
 import PropTypes from 'prop-types';
 import Comment from '../Comment/Comment';
 import 'ldrs/ring';
+import useReplies from '../useReplies';
+import { isEqual } from 'lodash';
 
 function RepliesList({
   parentId,
@@ -11,44 +12,45 @@ function RepliesList({
   commentRepliesCount,
   repliesIsOpen,
   setRepliesIsOpen,
-  replies,
-  setReplies,
+  newUserReplies,
+  setNewUserReplies,
+  maxCreatedAt,
 }) {
-  const [nextRepliesPage, setNextRepliesPage] = useState(1);
-  const [loadingReplies, setLoadingReplies] = useState(false);
-  const isFirstRepliesOpen = useRef(true);
+  const [isFirstRepliesOpen, setIsFirstRepliesOpen] = useState(true);
 
-  async function fetchCommentReplies(nextRepliesPage) {
-    try {
-      setLoadingReplies(true);
-      const fetchedReplies = await PostAPI.getRepliesOnPostComment(
-        postId,
-        parentId,
-        { page: nextRepliesPage },
-      );
-      return fetchedReplies;
-    } catch (error) {
-      console.error('Error fetching replies:', error);
-    } finally {
-      setLoadingReplies(false);
-    }
-  }
+  const queryKey = useRef(['replies', { parentId, postId, maxCreatedAt }]);
+  const generatedQueryKey = ['replies', { parentId, postId, maxCreatedAt }];
+
+  // Prevent new fetches for new query keys because whenever the sort by option
+  // option is changed, the comments and its children including this component will
+  // be remounted and its state will be reset.
+  const enabled =
+    !isFirstRepliesOpen && isEqual(queryKey.current, generatedQueryKey);
+
+  const {
+    replies,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useReplies({
+    parentId,
+    postId,
+    enabled: enabled,
+    limit: 10,
+    maxCreatedAt,
+  });
 
   async function handleRepliesButtonClick() {
-    if (isFirstRepliesOpen.current) {
-      const fetchedReplies = await fetchCommentReplies(nextRepliesPage);
-      setNextRepliesPage(fetchedReplies.pagination.next_page);
-      setReplies([...replies, ...fetchedReplies.data.replies]);
-      isFirstRepliesOpen.current = false;
+    if (isFirstRepliesOpen) {
+      setIsFirstRepliesOpen(false);
     }
     setRepliesIsOpen(!repliesIsOpen);
   }
 
-  async function handleShowMoreRepliesButtonClick() {
-    const fetchedReplies = await fetchCommentReplies(nextRepliesPage);
-    setNextRepliesPage(fetchedReplies.pagination.next_page);
-    setReplies([...replies, ...fetchedReplies.data.replies]);
-  }
+  const allReplies = replies
+    ? replies.pages.flatMap((page) => page.data.replies)
+    : [];
 
   return (
     <>
@@ -62,31 +64,41 @@ function RepliesList({
             {repliesIsOpen && `▲ Hide replies (${commentRepliesCount})`}
           </button>
         )}
-        {(repliesIsOpen || (!repliesIsOpen && commentRepliesCount === 0)) &&
-          replies.map((reply) => {
-            return (
+        {repliesIsOpen
+          ? allReplies.map((comment) => (
               <Comment
-                key={reply._id}
-                profilePicSize={30}
-                commentData={reply}
-                parentReplies={replies}
-                setParentReplies={setReplies}
+                key={comment._id}
                 parentId={parentId}
+                profilePicSize={30}
+                commentData={comment}
+                setNewUserReplies={setNewUserReplies}
+                maxCreatedAt={maxCreatedAt}
               />
-            );
-          })}
-        {!loadingReplies && repliesIsOpen && nextRepliesPage !== null && (
-          <button
-            className={styles.showMoreRepliesButton}
-            onClick={handleShowMoreRepliesButtonClick}
-          >
-            Show more replies
-          </button>
-        )}
-        {loadingReplies && (
+            ))
+          : null}
+        {!repliesIsOpen &&
+          newUserReplies.map((comment) => (
+            <Comment
+              key={comment._id}
+              parentId={parentId}
+              profilePicSize={30}
+              commentData={comment}
+              setNewUserReplies={setNewUserReplies}
+              maxCreatedAt={maxCreatedAt}
+            />
+          ))}
+        {(isFetching || isFetchingNextPage) && (
           <div className={styles.loadingIconContainer}>
             <l-ring size='30' stroke='3' color='black' speed='1.5'></l-ring>
           </div>
+        )}
+        {!isFetchingNextPage && hasNextPage && repliesIsOpen && (
+          <button
+            className={styles.showMoreRepliesButton}
+            onClick={fetchNextPage}
+          >
+            Show more replies
+          </button>
         )}
       </div>
     </>
@@ -102,6 +114,9 @@ RepliesList.propTypes = {
   setRepliesIsOpen: PropTypes.func,
   replies: PropTypes.array,
   setReplies: PropTypes.func,
+  newUserReplies: PropTypes.array,
+  setNewUserReplies: PropTypes.func,
+  maxCreatedAt: PropTypes.string,
 };
 
 export default RepliesList;

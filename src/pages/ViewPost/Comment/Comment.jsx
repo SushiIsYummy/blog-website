@@ -5,12 +5,11 @@ import VotingWidget from '../../../components/VotingWidget/VotingWidget';
 import { useEffect, useRef, useState } from 'react';
 import PostAPI from '../../../api/PostAPI';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import ExpandableContent from '../../../components/ExpandableContent/ExpandableContent';
 import UserComment from '../UserComment/UserComment';
 import { useContext } from 'react';
 import AuthContext from '../../../context/AuthProvider';
-import RepliesList from '../RepliesList/RepliesList';
+import useReplies from '../useReplies';
 
 const voteOptions = {
   UPVOTE: 1,
@@ -22,8 +21,9 @@ function Comment({
   commentData,
   profilePicSize = 40,
   parentId = null,
-  parentReplies,
-  setParentReplies,
+  setNewUserReplies,
+  maxCreatedAt,
+  children: repliesList,
 }) {
   const { user } = useContext(AuthContext);
   const profilePhoto = commentData.author.profile_photo;
@@ -35,8 +35,6 @@ function Comment({
   const blogId = commentData.blog;
   const commentId = commentData._id;
   const commentLines = commentContent.split('\n');
-  const isParent = commentData.parent === null;
-  const commentRepliesCount = commentData.replies;
   const userReplyTextArea = useRef(null);
 
   const isFirstRender = useRef(true);
@@ -44,9 +42,6 @@ function Comment({
   const [upvotes, setUpvotes] = useState(commentData.upvotes);
   const [downvotes, setDownvotes] = useState(commentData.downvotes);
 
-  const [repliesIsOpen, setRepliesIsOpen] = useState(false);
-  const [localReplies, setLocalReplies] = useState([]);
-  const [localNewReplies, setLocalNewReplies] = useState([]);
   const [userReplyOpen, setUserReplyOpen] = useState(false);
   const [userCommentReplyLoading, setUserCommentReplyLoading] = useState(false);
 
@@ -101,26 +96,32 @@ function Comment({
     }
   }, [userReplyOpen]);
 
-  async function onUserCommentReplyActionClick(comment) {
+  const { addReplyOnComment } = useReplies({
+    parentId: parentId ?? commentId,
+    postId,
+    enabled: false,
+    maxCreatedAt,
+  });
+
+  async function onUserCommentReplyActionClick(content) {
     try {
       setUserCommentReplyLoading(true);
-      const createdComment = await PostAPI.createCommentOnPost(postId, {
-        content: comment,
-        parent: parentId || commentId,
-        blog: blogId,
+
+      const parentCommentId = parentId ?? commentId;
+      const createdComment = await addReplyOnComment({
+        postId,
+        blogId,
+        parentId: parentCommentId,
+        content,
       });
-      if (!isParent) {
-        setParentReplies([...parentReplies, createdComment.data.postComment]);
-      }
-      if (isParent) {
-        setLocalReplies([...localReplies, createdComment.data.postComment]);
-      }
-      if (commentRepliesCount > 0) {
-        setLocalNewReplies([
-          ...localNewReplies,
-          createdComment.data.postComment,
+
+      if (setNewUserReplies) {
+        setNewUserReplies((parentReplies) => [
+          ...parentReplies,
+          createdComment.data.comment,
         ]);
       }
+
       setUserReplyOpen(false);
     } catch (err) {
       console.error(err);
@@ -129,7 +130,7 @@ function Comment({
     }
   }
 
-  async function onUserCommentReplyCancelClick(comment) {
+  async function onUserCommentReplyCancelClick() {
     setUserReplyOpen(false);
   }
 
@@ -201,54 +202,10 @@ function Comment({
             <l-ring size='30' stroke='3' color='black' speed='1.5'></l-ring>
           </div>
         )}
-        {isParent && (
-          <RepliesList
-            textareaRef={userReplyTextArea}
-            parentId={commentId}
-            postId={postId}
-            commentRepliesCount={commentRepliesCount}
-            repliesIsOpen={repliesIsOpen}
-            setRepliesIsOpen={setRepliesIsOpen}
-            replies={localReplies}
-            setReplies={setLocalReplies}
-          />
-        )}
-        <div className={styles.repliesToOriginalComment}>
-          {isParent &&
-            !repliesIsOpen &&
-            localNewReplies.map((reply) => {
-              return (
-                <Comment
-                  key={reply._id}
-                  profilePicSize={30}
-                  commentData={reply}
-                  parentReplies={localReplies}
-                  setParentReplies={setLocalReplies}
-                  parentId={commentId}
-                />
-              );
-            })}
-        </div>
+        {repliesList}
       </div>
     </div>
   );
 }
-
-Comment.propTypes = {
-  commentData: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    author: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      profile_photo: PropTypes.string,
-      username: PropTypes.string.isRequired,
-    }).isRequired,
-    created_at: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-    user_vote: PropTypes.oneOf([voteOptions.UPVOTE, voteOptions.DOWNVOTE]),
-    upvotes: PropTypes.number.isRequired,
-    downvotes: PropTypes.number.isRequired,
-    post: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  }).isRequired,
-};
 
 export default Comment;

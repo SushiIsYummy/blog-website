@@ -1,4 +1,4 @@
-import { useLoaderData, NavLink, useOutletContext } from 'react-router-dom';
+import { useLoaderData, NavLink } from 'react-router-dom';
 import styles from './ViewPost.module.css';
 import PostAPI from '../../api/PostAPI';
 import TinyMCEView from '../../components/TinyMCE/TinyMCEView';
@@ -8,14 +8,23 @@ import VotingWidget from '../../components/VotingWidget/VotingWidget';
 import _ from 'lodash';
 import { useMediaQuery } from '@react-hook/media-query';
 import { FaRegComment } from 'react-icons/fa';
-import UserComment from './UserComment/UserComment';
-import Comment from './Comment/Comment';
+import CommentsSection from './CommentsSection/CommentsSection';
+
+const COMMENT_SORT_BY_OPTIONS = {
+  TOP: 'top',
+  NEWEST: 'newest',
+};
+
+const COMMENT_SORT_BY_OPTIONS_ARRAY = ['top', 'newest'];
 
 async function loader({ request, params }) {
   try {
-    const highlightedCommentIdQuery = new URL(request.url).searchParams.get(
-      'hc',
-    );
+    const urlSearchParams = new URL(request.url).searchParams;
+    const highlightedCommentIdQuery = urlSearchParams.get('hc');
+    let sortByQuery = urlSearchParams.get('sort_by');
+    sortByQuery = COMMENT_SORT_BY_OPTIONS_ARRAY.includes(sortByQuery)
+      ? sortByQuery
+      : COMMENT_SORT_BY_OPTIONS.TOP;
     let highlightedComment = null;
     if (highlightedCommentIdQuery) {
       let targetComment = null;
@@ -34,8 +43,9 @@ async function loader({ request, params }) {
       await Promise.all([
         PostAPI.getPostById(params.postId),
         PostAPI.getVotesOnPost(params.postId),
-        PostAPI.getCommentsOnPost(params.postId, { page: 1 }),
+        PostAPI.getCommentsOnPost(params.postId, { sort_by: sortByQuery }),
       ]);
+
     return {
       postResponse,
       postVotesResponse,
@@ -70,12 +80,7 @@ function ViewPost({ isPreview }) {
   } = useLoaderData();
   const post = postResponse.data.post;
   const initialComments = commentsResponse?.data?.comments || [];
-  const initialCommentsWithoutHighlightedComment = initialComments
-    ? initialComments.filter(
-        (comment) =>
-          highlightedComment && highlightedComment._id !== comment._id,
-      )
-    : [];
+
   const upvotesOnPost = postVotesResponse?.data?.upvotes || 0;
   const downvotesOnPost = postVotesResponse?.data?.downvotes || 0;
   const userVote = postVotesResponse?.data?.user_vote || 0;
@@ -85,12 +90,64 @@ function ViewPost({ isPreview }) {
   const [currentVote, setCurrentVote] = useState(userVote);
   const [upvotes, setUpvotes] = useState(upvotesOnPost);
   const [downvotes, setDownvotes] = useState(downvotesOnPost);
-  const [comments, setComments] = useState(
-    (highlightedComment
-      ? initialCommentsWithoutHighlightedComment
-      : initialComments) || [],
-  );
-  const [userCommentLoading, setUserCommentLoading] = useState(false);
+
+  const commentsSectionRef = useRef(null);
+
+  const [tinymceIsLoaded, setTinymceIsLoaded] = useState(false);
+  const [tinymceLoadedTimeoutOver, setTinymceLoadedTimeoutOver] =
+    useState(false);
+
+  const commentsSectionCanBeShown =
+    !isPreview && (tinymceIsLoaded || tinymceLoadedTimeoutOver);
+
+  const [canLoadComments, setCanLoadComments] = useState(false);
+
+  // Comments section is meant to be displayed after post content is loaded
+  // This useEffect is used to ensure that if the post content takes too
+  // long to load, it will display the comments section
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTinymceLoadedTimeoutOver(true);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (
+          entry.isIntersecting &&
+          commentsSectionCanBeShown &&
+          !canLoadComments
+        ) {
+          setCanLoadComments(true);
+        }
+      },
+      {
+        threshold: 1,
+      },
+    );
+
+    const commentsSection = commentsSectionRef.current;
+    if (commentsSection) {
+      observer.observe(commentsSection);
+    }
+
+    return () => {
+      if (commentsSection) {
+        observer.unobserve(commentsSection);
+      }
+    };
+  }, [
+    canLoadComments,
+    commentsSectionCanBeShown,
+    tinymceIsLoaded,
+    tinymceLoadedTimeoutOver,
+  ]);
 
   useEffect(() => {
     async function updateVote() {
@@ -137,23 +194,7 @@ function ViewPost({ isPreview }) {
     };
   }, [currentVote, isPreview, post._id]);
 
-  async function handleUserCommentActionClick(comment) {
-    try {
-      setUserCommentLoading(true);
-      const createdComment = await PostAPI.createCommentOnPost(post._id, {
-        content: comment,
-        blog: post.blog._id,
-      });
-      setComments([createdComment.data.postComment, ...comments]);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setUserCommentLoading(false);
-    }
-  }
-
   const postContainerContainer = useRef(null);
-  const commentsSection = useRef(null);
   const commentBadge = (
     <div
       className={`${styles.commentBadge} ${isMaxWidth768 ? styles.horizontal : ''}`}
@@ -168,8 +209,8 @@ function ViewPost({ isPreview }) {
   );
 
   function jumpToComments() {
-    if (commentsSection.current) {
-      commentsSection.current.scrollIntoView({
+    if (commentsSectionRef.current) {
+      commentsSectionRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
@@ -255,7 +296,20 @@ function ViewPost({ isPreview }) {
               </div>
             )}
             <div className={styles.postContent}>
-              <TinyMCEView content={post.content}></TinyMCEView>
+              {!tinymceIsLoaded && (
+                <div className={styles.loadingPostContent}>
+                  <l-ring
+                    size='30'
+                    stroke='3'
+                    color='black'
+                    speed='1.5'
+                  ></l-ring>
+                </div>
+              )}
+              <TinyMCEView
+                content={post.content}
+                setTinymceIsLoaded={setTinymceIsLoaded}
+              ></TinyMCEView>
             </div>
             {isMaxWidth768 && (
               <div className={`${styles.votesAndComments}`}>
@@ -271,60 +325,15 @@ function ViewPost({ isPreview }) {
                 {commentBadge}
               </div>
             )}
-            <div ref={commentsSection} className={styles.commentsSection}>
-              <div className={styles.commentsHeader}>
-                <h2 className={styles.commentsLabel}>
-                  {initialComments.length} Comments
-                </h2>
-              </div>
-              {!isPreview && (
-                <>
-                  <div className={styles.userComment}>
-                    {!userCommentLoading ? (
-                      <>
-                        <UserComment
-                          profilePic={post.author.profile_photo}
-                          onUserCommentActionClick={
-                            handleUserCommentActionClick
-                          }
-                          userCommentLoading={userCommentLoading}
-                          setUserCommentLoading={setUserCommentLoading}
-                          actionButtonName={'Comment'}
-                        />
-                      </>
-                    ) : (
-                      <div className={styles.userCommentLoading}>
-                        <l-ring
-                          size='30'
-                          stroke='3'
-                          color='black'
-                          speed='1.5'
-                        ></l-ring>
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.comments}>
-                    {highlightedComment ? (
-                      <div className={styles.highlightedComment}>
-                        <p className={styles.highlightedCommentTag}>
-                          Highlighted Comment
-                        </p>
-                        <Comment
-                          key={highlightedComment._id}
-                          commentData={highlightedComment}
-                          highlightedComment={true}
-                        />
-                      </div>
-                    ) : null}
-                    {comments.map((comment) => {
-                      return (
-                        <Comment key={comment._id} commentData={comment} />
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
+            {commentsSectionCanBeShown && (
+              <CommentsSection
+                post={post}
+                highlightedComment={highlightedComment}
+                canLoadComments={canLoadComments}
+                numberOfComments={initialComments.length}
+                commentsSectionRef={commentsSectionRef}
+              />
+            )}
           </div>
         </div>
       </div>

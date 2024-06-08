@@ -58,8 +58,10 @@ const PostAPI = {
     return response.data;
   },
 
-  getCommentsOnPost: async (postId) => {
-    const response = await axios.get(`/posts/${postId}/comments`);
+  getCommentsOnPost: async (postId, params) => {
+    const response = await axios.get(`/posts/${postId}/comments`, {
+      params,
+    });
     return response.data;
   },
 

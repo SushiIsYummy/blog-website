@@ -1,6 +1,6 @@
 import { Editor } from '@tinymce/tinymce-react';
 
-const TinyMCEView = ({ content }) => {
+const TinyMCEView = ({ content, setTinymceIsLoaded }) => {
   const editorConfig = {
     inline: true,
     menubar: false,
@@ -14,6 +14,11 @@ const TinyMCEView = ({ content }) => {
   return (
     <div id='tinymce-editor'>
       <Editor
+        onLoadContent={() => {
+          if (setTinymceIsLoaded) {
+            setTinymceIsLoaded(true);
+          }
+        }}
         apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
         initialValue={content}
         init={editorConfig}
