@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import styles from './AutoResizeTextarea.module.css';
+import './AutoResizeTextarea.module.css';
 import PropTypes from 'prop-types';
 
 const AutoResizeTextarea = ({
@@ -38,7 +38,6 @@ const AutoResizeTextarea = ({
   return (
     <textarea
       ref={textareaRef}
-      className={styles.autoResizeTextarea}
       rows={initialRows}
       placeholder={placeholder}
       onKeyDown={!allowLineBreak ? handleOnEnterDown : undefined}
