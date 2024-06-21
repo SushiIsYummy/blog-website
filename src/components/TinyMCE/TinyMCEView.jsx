@@ -14,12 +14,12 @@ const TinyMCEView = ({ content, setTinymceIsLoaded }) => {
   return (
     <div id='tinymce-editor'>
       <Editor
+        tinymceScriptSrc='/tinymce/tinymce.min.js'
         onLoadContent={() => {
           if (setTinymceIsLoaded) {
             setTinymceIsLoaded(true);
           }
         }}
-        apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
         initialValue={content}
         init={editorConfig}
         disabled={true}

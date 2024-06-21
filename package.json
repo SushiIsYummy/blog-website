@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "node ./postinstall.js"
   },
   "dependencies": {
     "@mantine/core": "^7.8.0",
@@ -24,6 +25,7 @@
     "dotenv": "^16.4.1",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.2",
+    "fs-extra": "^11.2.0",
     "jsdom": "^24.0.0",
     "ldrs": "^1.0.1",
     "lodash": "^4.17.21",
@@ -34,7 +36,7 @@
     "react-icons": "^5.0.1",
     "react-router-dom": "^6.22.0",
     "tailwindcss": "^3.4.1",
-    "tinymce": "^6.8.2"
+    "tinymce": "^6.8.4"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
