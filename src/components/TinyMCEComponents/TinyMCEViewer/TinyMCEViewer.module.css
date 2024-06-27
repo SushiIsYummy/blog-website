@@ -1,0 +1,80 @@
+.tinymceViewer {
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.tinymceViewer h1,
+.tinymceViewer h2,
+.tinymceViewer h3,
+.tinymceViewer h4,
+.tinymceViewer h5,
+.tinymceViewer h6 {
+  margin: 0;
+}
+
+.tinymceViewer p {
+  margin: 0;
+}
+
+.tinymceViewer ul,
+.tinymceViewer ol {
+  margin: 0;
+}
+
+.tinymceViewer img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* figure and figcaption */
+.tinymceViewer :global(.mce-figure) {
+  margin: 0;
+  max-width: 100%;
+}
+
+.tinymceViewer :global(.mce-figure) img {
+  max-width: 100%;
+}
+
+.tinymceViewer :global(.mce-figure) figcaption {
+  text-align: center;
+}
+
+.tinymceViewer :global(.mce-content-body) {
+  height: 100%;
+}
+
+.tinymceViewer figure {
+  margin: 0;
+  max-width: 100%;
+}
+
+.tinymceViewer figure img {
+  max-width: 100%;
+}
+
+.tinymceViewer figure figcaption {
+  text-align: center;
+  font-size: 16px;
+  color: gray;
+}
+
+.tinymceViewer :global(.mce-figure) img {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+}
+
+.tinymceViewer figure img {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+}
+
+.tinymceViewer :global(.mce-figure) figcaption {
+  text-align: center;
+  margin-top: 8px;
+}

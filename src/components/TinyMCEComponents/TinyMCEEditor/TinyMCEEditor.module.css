@@ -1,0 +1,14 @@
+.tinymceEditor {
+  height: 100%;
+  display: none;
+}
+
+.tinymceEditor.loaded {
+  display: block;
+}
+
+.loadingIconContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

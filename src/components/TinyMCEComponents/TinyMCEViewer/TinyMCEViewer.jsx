@@ -1,13 +1,13 @@
 import { Editor } from '@tinymce/tinymce-react';
+import './tinymce-styles-view.css';
 
-const TinyMCEView = ({ content, setTinymceIsLoaded }) => {
+const TinyMCEViewer = ({ content, setTinymceIsLoaded }) => {
   const editorConfig = {
     inline: true,
     menubar: false,
     toolbar: false,
     plugins: '',
     height: 'auto',
-    content_css: '/src/components/TinyMCE/tinymce-styles-view.css',
     readonly: true,
   };
 
@@ -28,4 +28,4 @@ const TinyMCEView = ({ content, setTinymceIsLoaded }) => {
   );
 };
 
-export default TinyMCEView;
+export default TinyMCEViewer;

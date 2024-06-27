@@ -1,8 +1,8 @@
 import { Form, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styles from './UserAbout.module.css';
-import TinyMCEEdit from '../../../../components/TinyMCE/TinyMCEEdit';
-import TinyMCEView from '../../../../components/TinyMCE/TinyMCEView';
+import TinyMCEEditor from '../../../../components/TinyMCEComponents/TinyMCEEditor/TinyMCEEditor';
+import TinyMCEViewer from '../../../../components/TinyMCEComponents/TinyMCEViewer/TinyMCEViewer';
 import UserAPI from '../../../../api/UserAPI';
 
 function UserAbout({
@@ -42,15 +42,24 @@ function UserAbout({
     }
   };
 
+  const headerHeight = getComputedStyle(document.body).getPropertyValue(
+    '--header-height',
+  );
+
+  const editorMaxHeight = window.innerHeight - parseFloat(headerHeight);
+
   return (
     <div>
       {editMode && (
         <div className={styles.aboutContentContainer}>
           <div className={styles.aboutContentView}>
             <Form className={styles.aboutForm} onSubmit={handleSubmit}>
-              <TinyMCEEdit
+              <TinyMCEEditor
                 initialValue={editAboutContent}
-                onChange={handleContentChange}
+                onEditorChange={handleContentChange}
+                maxHeight={
+                  !isNaN(editorMaxHeight) ? editorMaxHeight : undefined
+                }
               />
               <div className={styles.cancelAndSaveButtons}>
                 <button
@@ -74,7 +83,7 @@ function UserAbout({
       {!editMode && (
         <div className={styles.aboutContentContainer}>
           <div className={styles.aboutContentEdit}>
-            <TinyMCEView content={savedAboutContent}></TinyMCEView>
+            <TinyMCEViewer content={savedAboutContent}></TinyMCEViewer>
             <button
               className={styles.editButton}
               onClick={() => setEditMode(true)}

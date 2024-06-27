@@ -1,17 +1,6 @@
 .editPost {
 }
 
-.postContainer {
-  display: flex;
-  justify-content: center;
-  padding: 0 20px 0 20px;
-}
-
-.selectBlog {
-  display: flex;
-  gap: 10px;
-}
-
 .publishButton,
 .updateButton {
   padding: 10px 20px;
@@ -41,7 +30,7 @@
 
 .titleSubheadingContent {
   height: 100%;
-  max-width: 700px;
+  max-width: 800px;
   margin: auto;
 }
 
@@ -81,22 +70,6 @@
 
 .subheading textarea::placeholder {
   color: rgb(180, 180, 180);
-}
-
-.contentContainer {
-  height: 100%;
-}
-
-.contentContainer div:global(#tinymce-editor) {
-  height: 100%;
-}
-
-.contentContainer div:global(.tox.editor-container) {
-  /* height: 100% !important; */
-}
-
-.contentContainer div:global(.tox.tox-tinymce) {
-  height: 100% !important;
 }
 
 @media screen and (min-width: 720px) {

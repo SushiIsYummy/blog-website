@@ -1,7 +1,7 @@
 import { useLoaderData, useParams } from 'react-router-dom';
 import styles from './EditPost.module.css';
 import PostAPI from '../../api/PostAPI';
-import TinyMCEEdit from '../../components/TinyMCE/TinyMCEEdit';
+import TinyMCEEditor from '../../components/TinyMCEComponents/TinyMCEEditor/TinyMCEEditor';
 import { useRef, useState, useEffect } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../../context/AuthProvider';
@@ -115,6 +115,9 @@ function EditPost() {
     };
   }, [postToolbar]);
 
+  const editorMaxHeight =
+    window.innerHeight - parseFloat(headerHeight) - parseFloat(toolbarHeight);
+
   return (
     <div className={styles.editPost}>
       <div className={styles.toolbar} ref={postToolbar}>
@@ -163,19 +166,12 @@ function EditPost() {
             />
           </div>
         </div>
-        <div
-          className={styles.contentContainer}
-          style={{
-            height: `calc(100vh - ${headerHeight} - ${toolbarHeight}px)`,
-          }}
-        >
-          <TinyMCEEdit
-            onInit={handleEditorInit}
-            initialValue={content}
-            onChange={handleContentChange}
-            contentStyle={`body { overflow-y: auto!important; }`}
-          />
-        </div>
+        <TinyMCEEditor
+          onInit={handleEditorInit}
+          initialValue={content}
+          onEditorChange={handleContentChange}
+          maxHeight={!isNaN(editorMaxHeight) ? editorMaxHeight : undefined}
+        />
       </div>
       {!postIsPublished && (
         <PublishPostModal

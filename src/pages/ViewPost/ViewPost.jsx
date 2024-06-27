@@ -1,7 +1,7 @@
 import { useLoaderData, NavLink } from 'react-router-dom';
 import styles from './ViewPost.module.css';
 import PostAPI from '../../api/PostAPI';
-import TinyMCEView from '../../components/TinyMCE/TinyMCEView';
+import TinyMCEViewer from '../../components/TinyMCEComponents/TinyMCEViewer/TinyMCEViewer';
 import toRelativeTimeLuxon from '../../utils/toRelativeTimeLuxon';
 import { useEffect, useRef, useState } from 'react';
 import VotingWidget from '../../components/VotingWidget/VotingWidget';
@@ -306,10 +306,10 @@ function ViewPost({ isPreview }) {
                   ></l-ring>
                 </div>
               )}
-              <TinyMCEView
+              <TinyMCEViewer
                 content={post.content}
                 setTinymceIsLoaded={setTinymceIsLoaded}
-              ></TinyMCEView>
+              ></TinyMCEViewer>
             </div>
             {isMaxWidth768 && (
               <div className={`${styles.votesAndComments}`}>
