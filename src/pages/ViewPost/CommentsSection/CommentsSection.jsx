@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import styles from './CommentsSection.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import _ from 'lodash';
 import UserComment from '../UserComment/UserComment';
 import { Select } from '@mantine/core';
@@ -54,10 +54,12 @@ const CommentsSection = ({
   // When new data is finished fetching (isPlaceholderData turns from true to false),
   // prevent showing render where the replies of a comment are opened for a single render
   // right before the comment components are to be remounted
-  if (prevIsPlaceholderData.current && !isPlaceholderData) {
-    setCommentsResetKey((key) => key + 1);
-  }
-  prevIsPlaceholderData.current = isPlaceholderData;
+  useLayoutEffect(() => {
+    if (prevIsPlaceholderData.current && !isPlaceholderData) {
+      setCommentsResetKey((key) => key + 1);
+    }
+    prevIsPlaceholderData.current = isPlaceholderData;
+  }, [isPlaceholderData]);
 
   async function handleUserCommentActionClick(content) {
     try {
