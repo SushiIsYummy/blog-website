@@ -2,8 +2,8 @@ import { Form, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styles from './UserAbout.module.css';
 import TinyMCEEditor from '../../../../components/TinyMCEComponents/TinyMCEEditor/TinyMCEEditor';
-import TinyMCEViewer from '../../../../components/TinyMCEComponents/TinyMCEViewer/TinyMCEViewer';
 import UserAPI from '../../../../api/UserAPI';
+import HtmlContentDisplay from '../../../../components/HtmlContentDisplay/HtmlContentDisplay';
 
 function UserAbout({
   editAboutContent,
@@ -83,7 +83,7 @@ function UserAbout({
       {!editMode && (
         <div className={styles.aboutContentContainer}>
           <div className={styles.aboutContentEdit}>
-            <TinyMCEViewer content={savedAboutContent}></TinyMCEViewer>
+            <HtmlContentDisplay content={savedAboutContent} />
             <button
               className={styles.editButton}
               onClick={() => setEditMode(true)}

@@ -1,7 +1,6 @@
 import { useLoaderData, NavLink } from 'react-router-dom';
 import styles from './ViewPost.module.css';
 import PostAPI from '../../api/PostAPI';
-import TinyMCEViewer from '../../components/TinyMCEComponents/TinyMCEViewer/TinyMCEViewer';
 import toRelativeTimeLuxon from '../../utils/toRelativeTimeLuxon';
 import { useEffect, useRef, useState } from 'react';
 import VotingWidget from '../../components/VotingWidget/VotingWidget';
@@ -9,6 +8,7 @@ import _ from 'lodash';
 import { useMediaQuery } from '@react-hook/media-query';
 import { FaRegComment } from 'react-icons/fa';
 import CommentsSection from './CommentsSection/CommentsSection';
+import HtmlContentDisplay from '../../components/HtmlContentDisplay/HtmlContentDisplay';
 
 const COMMENT_SORT_BY_OPTIONS = {
   TOP: 'top',
@@ -93,37 +93,13 @@ function ViewPost({ isPreview }) {
 
   const commentsSectionRef = useRef(null);
 
-  const [tinymceIsLoaded, setTinymceIsLoaded] = useState(false);
-  const [tinymceLoadedTimeoutOver, setTinymceLoadedTimeoutOver] =
-    useState(false);
-
-  const commentsSectionCanBeShown =
-    !isPreview && (tinymceIsLoaded || tinymceLoadedTimeoutOver);
-
   const [canLoadComments, setCanLoadComments] = useState(false);
-
-  // Comments section is meant to be displayed after post content is loaded
-  // This useEffect is used to ensure that if the post content takes too
-  // long to load, it will display the comments section
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTinymceLoadedTimeoutOver(true);
-    }, 3000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (
-          entry.isIntersecting &&
-          commentsSectionCanBeShown &&
-          !canLoadComments
-        ) {
+        if (entry.isIntersecting && !canLoadComments) {
           setCanLoadComments(true);
         }
       },
@@ -142,12 +118,7 @@ function ViewPost({ isPreview }) {
         observer.unobserve(commentsSection);
       }
     };
-  }, [
-    canLoadComments,
-    commentsSectionCanBeShown,
-    tinymceIsLoaded,
-    tinymceLoadedTimeoutOver,
-  ]);
+  }, [canLoadComments]);
 
   useEffect(() => {
     async function updateVote() {
@@ -296,20 +267,7 @@ function ViewPost({ isPreview }) {
               </div>
             )}
             <div className={styles.postContent}>
-              {!tinymceIsLoaded && (
-                <div className={styles.loadingPostContent}>
-                  <l-ring
-                    size='30'
-                    stroke='3'
-                    color='black'
-                    speed='1.5'
-                  ></l-ring>
-                </div>
-              )}
-              <TinyMCEViewer
-                content={post.content}
-                setTinymceIsLoaded={setTinymceIsLoaded}
-              ></TinyMCEViewer>
+              <HtmlContentDisplay content={post.content} />
             </div>
             {isMaxWidth768 && (
               <div className={`${styles.votesAndComments}`}>
@@ -325,15 +283,13 @@ function ViewPost({ isPreview }) {
                 {commentBadge}
               </div>
             )}
-            {commentsSectionCanBeShown && (
-              <CommentsSection
-                post={post}
-                highlightedComment={highlightedComment}
-                canLoadComments={canLoadComments}
-                numberOfComments={initialComments.length}
-                commentsSectionRef={commentsSectionRef}
-              />
-            )}
+            <CommentsSection
+              post={post}
+              highlightedComment={highlightedComment}
+              canLoadComments={canLoadComments}
+              numberOfComments={initialComments.length}
+              commentsSectionRef={commentsSectionRef}
+            />
           </div>
         </div>
       </div>

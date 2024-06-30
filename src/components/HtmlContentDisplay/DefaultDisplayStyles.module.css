@@ -1,0 +1,24 @@
+/* revert the global css reset because the tinymce editor does 
+not use the css reset */
+.htmlContentDisplay,
+.htmlContentDisplay *:not(img) {
+  all: revert;
+}
+
+.htmlContentDisplay {
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  line-height: 1.5;
+  color: #333;
+  word-wrap: break-word;
+  margin: 0;
+}
+
+.htmlContentDisplay p {
+  margin: 0;
+}
+
+.htmlContentDisplay img {
+  max-width: 100%;
+  height: auto;
+}

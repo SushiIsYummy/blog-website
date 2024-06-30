@@ -1,4 +1,3 @@
-import './index.css';
 import ErrorPage from './pages/Error/ErrorPage';
 import UserProfile from './pages/UserProfile/UserProfile';
 import Home from './pages/Home/Home';

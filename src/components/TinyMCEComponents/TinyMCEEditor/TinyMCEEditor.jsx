@@ -38,26 +38,27 @@ function TinyMCEEditor({
               'autoresize advlist autolink lists link image indent paste wordcount contextmenu quickbars',
             contextmenu: false,
             quickbars_selection_toolbar:
-              'bold italic underline forecolor backcolor fontsize link image blockquote | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat',
+              'bold italic underline forecolor backcolor fontsize link image | alignleft aligncenter alignright | bullist numlist | removeformat',
             quickbars_insert_toolbar: false,
             toolbar:
-              'undo redo | bold italic underline forecolor backcolor fontsize link image alignleftimage aligncenterimage | \
-            alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat |',
+              'undo redo | bold italic underline forecolor backcolor fontsize link image | \
+            alignleft aligncenter alignright | bullist numlist outdent indent | removeformat |',
             link_assume_external_targets: true,
             relative_urls: false,
             remove_script_host: false,
             convert_urls: false,
-            image_caption: true,
+            image_caption: false,
             autoresize_overflow_padding: 5,
             autoresize_bottom_margin: 0,
-            fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
+            font_size_formats:
+              '8px 10px 12px 14px 16px 18px 20px 22px 24px 36px 48px 72px',
             object_resizing: false,
             elementpath: false,
             content_css:
               '/src/components/TinyMCEComponents/TinyMCEEditor/tinymce-styles-edit.css',
             mobile: {
               quickbars_selection_toolbar:
-                'bold italic underline forecolor backcolor fontsize link image blockquote | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat',
+                'bold italic underline forecolor backcolor fontsize link image | alignleft aligncenter alignright | bullist numlist | removeformat',
             },
           }}
           value={initialValue}
