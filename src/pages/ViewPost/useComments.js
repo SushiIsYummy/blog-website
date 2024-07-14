@@ -85,9 +85,42 @@ const useComments = ({
     },
   });
 
+  const updateCommentMutation = useMutation({
+    mutationFn: async ({ commentId, newComment }) => {
+      const createdComment = await PostAPI.updateCommentOnPost(
+        postId,
+        commentId,
+        {
+          content: newComment,
+        },
+      );
+
+      return createdComment;
+    },
+    onSuccess: (newComment) => {
+      queryClient.setQueryData(queryKey, (oldData) => {
+        if (!oldData) return;
+
+        const pages = oldData.pages.map((page) => ({
+          ...page,
+          data: {
+            ...page.data,
+            comments: page.data.comments.map((comment) => {
+              return comment._id === newComment.data.comment._id
+                ? newComment.data.comment
+                : comment;
+            }),
+          },
+        }));
+        return { ...oldData, pages };
+      });
+    },
+  });
+
   return {
     comments,
     addNewComment: addCommentMutation.mutateAsync,
+    updateComment: updateCommentMutation.mutateAsync,
     ...rest,
   };
 };

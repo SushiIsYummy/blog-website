@@ -2,14 +2,15 @@ import styles from './Comment.module.css';
 import toRelativeTimeLuxon from '../../../utils/toRelativeTimeLuxon';
 import { NavLink } from 'react-router-dom';
 import VotingWidget from '../../../components/VotingWidget/VotingWidget';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import PostAPI from '../../../api/PostAPI';
 import _ from 'lodash';
 import ExpandableContent from '../../../components/ExpandableContent/ExpandableContent';
 import UserComment from '../UserComment/UserComment';
-import { useContext } from 'react';
-import AuthContext from '../../../context/AuthProvider';
 import useReplies from '../useReplies';
+import OverflowMenu from './OverflowMenu/OverflowMenu';
+import CommentEditForm from '../CommentEditForm/CommentEditForm';
+import AuthContext from '../../../context/AuthProvider';
 
 const voteOptions = {
   UPVOTE: 1,
@@ -22,20 +23,26 @@ function Comment({
   profilePicSize = 40,
   parentId = null,
   setNewUserReplies,
+  updateNewUserReply,
   maxCreatedAt,
-  children: repliesList,
+  updateComment,
 }) {
-  const { user } = useContext(AuthContext);
-  const profilePhoto = commentData.author.profile_photo;
+  const profilePhoto =
+    commentData.author.profile_photo ?? '/images/default_profile_photo.jpg';
   const commentContent = commentData.content;
   const username = commentData.author.username;
   const commentCreationDate = toRelativeTimeLuxon(commentData.created_at);
-  const commentUserId = commentData.author._id;
+  const commentAuthorId = commentData.author._id;
   const postId = commentData.post;
   const blogId = commentData.blog;
   const commentId = commentData._id;
   const commentLines = commentContent.split('\n');
+  const lastEditedAt = commentData.last_edited_at;
   const userReplyTextArea = useRef(null);
+  const userEditTextArea = useRef(null);
+
+  const { user, isLoggedIn } = useContext(AuthContext);
+  const userIsCommentAuthor = user.userId === commentAuthorId;
 
   const isFirstRender = useRef(true);
   const [currentVote, setCurrentVote] = useState(commentData.user_vote || 0);
@@ -44,6 +51,8 @@ function Comment({
 
   const [userReplyOpen, setUserReplyOpen] = useState(false);
   const [userCommentReplyLoading, setUserCommentReplyLoading] = useState(false);
+
+  const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     async function updateVote() {
@@ -91,10 +100,20 @@ function Comment({
   }, [commentId, currentVote, postId]);
 
   useEffect(() => {
-    if (userReplyOpen) {
-      focusOnUserReplyTextArea();
+    if (userReplyOpen && userReplyTextArea.current) {
+      userReplyTextArea.current.focus();
     }
   }, [userReplyOpen]);
+
+  // useEffect(() => {
+  //   if (isEditMode && userEditTextArea.current) {
+  //     userEditTextArea.current.focus();
+  //     userEditTextArea.current.setSelectionRange(
+  //       userEditTextArea.current.value.length,
+  //       userEditTextArea.current.value.length,
+  //     );
+  //   }
+  // }, [isEditMode]);
 
   const { addReplyOnComment } = useReplies({
     parentId: parentId ?? commentId,
@@ -134,75 +153,130 @@ function Comment({
     setUserReplyOpen(false);
   }
 
-  function focusOnUserReplyTextArea() {
+  function focusOnReplyTextArea() {
     if (userReplyTextArea.current) {
       userReplyTextArea.current.focus();
     }
   }
 
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  async function handleEditSaveClick(content) {
+    setSavingEdit(true);
+    try {
+      const updatedComment = await updateComment({
+        commentId,
+        newComment: content,
+      });
+      updateNewUserReply(commentId, updatedComment.data.comment);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setSavingEdit(false);
+      setIsEditMode(false);
+    }
+  }
+
+  function isActionButtonEnabled(newText) {
+    return newText !== commentContent;
+  }
+
+  if (savingEdit) {
+    return (
+      <div className={styles.loadingIcon}>
+        <l-ring size='30' stroke='3' color='black' speed='1.5'></l-ring>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.comment}>
       <img
-        src={
-          profilePhoto !== null
-            ? profilePhoto
-            : '/images/default_profile_photo.jpg'
-        }
+        src={profilePhoto}
         alt='user profile pic'
-        style={{ width: `${profilePicSize}px`, height: `${profilePicSize}px` }}
+        style={{
+          width: `${profilePicSize}px`,
+          height: `${profilePicSize}px`,
+        }}
       />
       <div className={styles.rightSide}>
-        <p>
-          <NavLink to={`/users/${commentUserId}`}>@{username}</NavLink>
-          <span className={styles.commentCreationDate}>
-            {' '}
-            • {commentCreationDate}
-          </span>
-        </p>
-        <ExpandableContent>
-          {commentLines.map((line, index) => (
-            <span className={styles.commentLine} key={index}>
-              {line}
-            </span>
-          ))}
-        </ExpandableContent>
-        <div className={styles.votesAndReply}>
-          <VotingWidget
-            orientation={'horizontal'}
-            currentVote={currentVote}
-            setCurrentVote={setCurrentVote}
-            upvotes={upvotes}
-            downvotes={downvotes}
-            setUpvotes={setUpvotes}
-            setDownvotes={setDownvotes}
+        {isEditMode ? (
+          <CommentEditForm
+            textareaRef={userEditTextArea}
+            initialText={commentContent}
+            onActionButtonClick={handleEditSaveClick}
+            onCancelButtonClick={() => setIsEditMode(false)}
+            actionButtonName={'Save'}
+            isActionButtonEnabled={isActionButtonEnabled}
           />
-          <button
-            className={styles.replyButton}
-            onClick={() => {
-              setUserReplyOpen(true);
-              focusOnUserReplyTextArea();
-            }}
-          >
-            Reply
-          </button>
-        </div>
-        {!userCommentReplyLoading && userReplyOpen && (
-          <UserComment
-            textareaRef={userReplyTextArea}
-            profilePic={user.profile_photo}
-            profilePicSize={30}
-            onUserCommentActionClick={onUserCommentReplyActionClick}
-            onUserCommentCancelClick={onUserCommentReplyCancelClick}
-            actionButtonName={'Reply'}
-            actionButtonsOpenInitially={true}
-          />
+        ) : (
+          <>
+            <p>
+              <NavLink to={`/users/${commentAuthorId}`}>@{username}</NavLink>
+              <span className={styles.commentCreationDate}>
+                {' '}
+                • {commentCreationDate}
+                {lastEditedAt ? <span> (edited)</span> : null}
+              </span>
+            </p>
+            <div className={styles.content}>
+              <ExpandableContent>
+                {commentLines.map((line, index) => (
+                  <span className={styles.commentLine} key={index}>
+                    {line}
+                  </span>
+                ))}
+              </ExpandableContent>
+            </div>
+            <div className={styles.commentActionBar}>
+              <div className={styles.leftSide}>
+                <VotingWidget
+                  orientation={'horizontal'}
+                  currentVote={currentVote}
+                  setCurrentVote={setCurrentVote}
+                  upvotes={upvotes}
+                  downvotes={downvotes}
+                  setUpvotes={setUpvotes}
+                  setDownvotes={setDownvotes}
+                />
+                <button
+                  className={styles.replyButton}
+                  onClick={() => {
+                    setUserReplyOpen(true);
+                    focusOnReplyTextArea();
+                  }}
+                >
+                  Reply
+                </button>
+              </div>
+              {isLoggedIn && userIsCommentAuthor ? (
+                <OverflowMenu
+                  // commentId={commentId}
+                  onEditClick={() => {
+                    setIsEditMode(true);
+                    // focusOnEditTextArea();
+                  }}
+                />
+              ) : null}
+            </div>
+            {!userCommentReplyLoading && userReplyOpen && (
+              <UserComment
+                textareaRef={userReplyTextArea}
+                profilePic={profilePhoto}
+                profilePicSize={30}
+                onUserCommentActionClick={onUserCommentReplyActionClick}
+                onUserCommentCancelClick={onUserCommentReplyCancelClick}
+                actionButtonName={'Reply'}
+                actionButtonsOpenInitially={true}
+              />
+            )}
+            {userCommentReplyLoading && (
+              <div className={styles.loadingIcon}>
+                <l-ring size='30' stroke='3' color='black' speed='1.5'></l-ring>
+              </div>
+            )}
+          </>
         )}
-        {userCommentReplyLoading && (
-          <div className={styles.userCommentLoading}>
-            <l-ring size='30' stroke='3' color='black' speed='1.5'></l-ring>
-          </div>
-        )}
-        {repliesList}
       </div>
     </div>
   );

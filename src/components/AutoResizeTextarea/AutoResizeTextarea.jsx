@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 const AutoResizeTextarea = ({
   externalTextareaRef,
+  className,
   onTextChange,
   content,
   placeholder = '',
@@ -38,6 +39,7 @@ const AutoResizeTextarea = ({
   return (
     <textarea
       ref={textareaRef}
+      className={className}
       rows={initialRows}
       placeholder={placeholder}
       onKeyDown={!allowLineBreak ? handleOnEnterDown : undefined}

@@ -1,3 +1,10 @@
+.repliesList {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-left: 50px;
+}
+
 .repliesButton {
   padding: 10px 13px;
   width: fit-content;
@@ -30,12 +37,6 @@
 
 .showMoreRepliesButton:hover {
   background-color: rgba(128, 170, 224, 0.5);
-}
-
-.replies {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
 }
 
 .loadingIconContainer {

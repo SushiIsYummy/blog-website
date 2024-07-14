@@ -31,10 +31,16 @@ span.commentLine {
   margin: 2px 0;
 }
 
-.votesAndReply {
+.commentActionBar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
+}
+
+.commentActionBar .leftSide {
+  display: flex;
+  gap: 5px;
 }
 
 .replyButton {
@@ -51,7 +57,7 @@ span.commentLine {
   background-color: rgba(192, 192, 192, 0.5);
 }
 
-.userCommentLoading {
+.loadingIcon {
   display: flex;
   justify-content: center;
 }

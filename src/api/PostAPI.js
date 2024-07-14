@@ -80,6 +80,14 @@ const PostAPI = {
     return response.data;
   },
 
+  updateCommentOnPost: async (postId, commentId, commentData) => {
+    const response = await axios.put(
+      `/posts/${postId}/comments/${commentId}`,
+      commentData,
+    );
+    return response.data;
+  },
+
   updateCommentVoteOnPost: async (postId, commentId, commentData) => {
     const response = await axios.put(
       `/posts/${postId}/comments/${commentId}/votes/vote`,

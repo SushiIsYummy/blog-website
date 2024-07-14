@@ -35,6 +35,7 @@ const CommentsSection = ({
     isFetching,
     isPlaceholderData,
     addNewComment,
+    updateComment,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -176,6 +177,7 @@ const CommentsSection = ({
               }
               commentData={comment}
               maxCreatedAt={maxCreatedAt}
+              updateComment={updateComment}
             />
           );
         })}

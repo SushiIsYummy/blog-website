@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 
 function UserComment({
   textareaRef,
+  content = '',
   profilePic,
   profilePicSize = 40,
   onUserCommentActionClick,
@@ -13,7 +14,7 @@ function UserComment({
   actionButtonName,
   actionButtonsOpenInitially,
 }) {
-  const [userComment, setUserComment] = useState('');
+  const [userComment, setUserComment] = useState(content);
   const [userCommentDisabled, setUserCommentDisabled] = useState(true);
   const [showCommentActionButtons, setShowCommentActionButtons] = useState(
     actionButtonsOpenInitially || false,
@@ -70,6 +71,7 @@ function UserComment({
       <div className={styles.rightSide}>
         <AutoResizeTextarea
           externalTextareaRef={textareaRef}
+          className={styles.textarea}
           content={userComment}
           allowLineBreak={true}
           onTextChange={handleUserCommentChange}
@@ -77,7 +79,7 @@ function UserComment({
           onFocus={handleUserCommentFocus}
         />
         {showCommentActionButtons && (
-          <div className={styles.userCommentActionButtons}>
+          <div className={styles.actionButtons}>
             <button
               className={styles.cancelButton}
               onClick={handleUserCommentCancelClick}

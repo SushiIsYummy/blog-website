@@ -13,6 +13,7 @@ function RepliesList({
   repliesIsOpen,
   setRepliesIsOpen,
   newUserReplies,
+  updateNewUserReply,
   setNewUserReplies,
   maxCreatedAt,
 }) {
@@ -30,6 +31,7 @@ function RepliesList({
   const {
     replies,
     fetchNextPage,
+    updateReplyOnComment,
     hasNextPage,
     isFetching,
     isFetchingNextPage,
@@ -53,31 +55,18 @@ function RepliesList({
     : [];
 
   return (
-    <>
-      <div className={styles.replies}>
-        {commentRepliesCount > 0 && (
-          <button
-            className={styles.repliesButton}
-            onClick={handleRepliesButtonClick}
-          >
-            {!repliesIsOpen && `▼ View replies (${commentRepliesCount})`}
-            {repliesIsOpen && `▲ Hide replies (${commentRepliesCount})`}
-          </button>
-        )}
-        {repliesIsOpen
-          ? allReplies.map((comment) => (
-              <Comment
-                key={comment._id}
-                parentId={parentId}
-                profilePicSize={30}
-                commentData={comment}
-                setNewUserReplies={setNewUserReplies}
-                maxCreatedAt={maxCreatedAt}
-              />
-            ))
-          : null}
-        {!repliesIsOpen &&
-          newUserReplies.map((comment) => (
+    <div className={styles.repliesList}>
+      {commentRepliesCount > 0 && (
+        <button
+          className={styles.repliesButton}
+          onClick={handleRepliesButtonClick}
+        >
+          {!repliesIsOpen && `▼ View replies (${commentRepliesCount})`}
+          {repliesIsOpen && `▲ Hide replies (${commentRepliesCount})`}
+        </button>
+      )}
+      {repliesIsOpen
+        ? allReplies.map((comment) => (
             <Comment
               key={comment._id}
               parentId={parentId}
@@ -85,23 +74,38 @@ function RepliesList({
               commentData={comment}
               setNewUserReplies={setNewUserReplies}
               maxCreatedAt={maxCreatedAt}
+              updateComment={updateReplyOnComment}
+              updateNewUserReply={updateNewUserReply}
             />
-          ))}
-        {(isFetching || isFetchingNextPage) && (
-          <div className={styles.loadingIconContainer}>
-            <l-ring size='30' stroke='3' color='black' speed='1.5'></l-ring>
-          </div>
-        )}
-        {!isFetchingNextPage && hasNextPage && repliesIsOpen && (
-          <button
-            className={styles.showMoreRepliesButton}
-            onClick={fetchNextPage}
-          >
-            Show more replies
-          </button>
-        )}
-      </div>
-    </>
+          ))
+        : null}
+      {!repliesIsOpen &&
+        newUserReplies.map((comment) => (
+          <Comment
+            key={comment._id}
+            parentId={parentId}
+            profilePicSize={30}
+            commentData={comment}
+            setNewUserReplies={setNewUserReplies}
+            maxCreatedAt={maxCreatedAt}
+            updateComment={updateReplyOnComment}
+            updateNewUserReply={updateNewUserReply}
+          />
+        ))}
+      {(isFetching || isFetchingNextPage) && (
+        <div className={styles.loadingIconContainer}>
+          <l-ring size='30' stroke='3' color='black' speed='1.5'></l-ring>
+        </div>
+      )}
+      {!isFetchingNextPage && hasNextPage && repliesIsOpen && (
+        <button
+          className={styles.showMoreRepliesButton}
+          onClick={fetchNextPage}
+        >
+          Show more replies
+        </button>
+      )}
+    </div>
   );
 }
 

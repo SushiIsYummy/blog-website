@@ -1,28 +1,19 @@
-.userComment {
+.commentEditForm {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
 }
 
-.userComment img {
-  border-radius: 50%;
-}
-
-.userComment textarea:not(:focus) {
+.commentEditForm textarea:not(:focus) {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.userComment textarea {
+.commentEditForm textarea {
   border-bottom: 1px solid black;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  align-self: flex-start;
+  /* font-family: 'Courier New', Courier, monospace; */
+  /* align-self: flex-start; */
   font-size: 1rem;
-  line-height: 1.25;
-}
-
-.userComment .rightSide {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+  line-height: 1.2;
 }
 
 .textarea {
@@ -52,16 +43,16 @@
   background-color: rgba(192, 192, 192, 0.5);
 }
 
-.actionButtons .commentButton:disabled {
+.actionButtons .actionButton:disabled {
   background-color: rgba(0, 0, 0, 0.1);
   color: rgb(162, 154, 142);
 }
-.actionButtons .commentButton:enabled {
+.actionButtons .actionButton:enabled {
   background-color: #0082c9;
   color: white;
 }
 
-.actionButtons .commentButton:enabled:hover {
+.actionButtons .actionButton:enabled:hover {
   background-color: #1d94d4;
   color: white;
 }
